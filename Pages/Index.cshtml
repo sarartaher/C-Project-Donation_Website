@@ -1,0 +1,91 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Hero Section -->
+<section class="d-flex flex-wrap justify-content-between align-items-center p-5 text-white hero-home gap-4">
+    <div class="hero-text col-lg-6 col-md-12 px-3">
+        <h1 class="text-wrap title">Helping Hands are better than Praying lips</h1>
+        <h4 class="fw-light hero-description">
+            Every year, countless people around us struggle in silence. Some lose everything in floods, cyclones, or earthquakes. Some suffer from accidents, fire, or poverty. Many orphans grow up without love and support, while elderly people in old homes wait for someone to visit, someone to care. During Eid and Ramadan, when joy should fill every home, millions still go to sleep hungry, without new clothes, without a smile.
+
+            We believe that humanity is the greatest strength. We are creating a website where every person can extend a helping hand, no matter how small. Because together, small efforts can create big changes.
+        </h4>
+        <div class="mt-4 hero-buttons d-flex flex-wrap gap-2">
+            <a asp-page="/Orphanage" class="btn btn-light btn-lg">For Orphans</a>
+            <a asp-page="/OldHomeAid" class="btn btn-light btn-lg">Old Home</a>
+            <a asp-page="/Zakat" class="btn btn-light btn-lg">Zakat</a>
+            <a asp-page="/Eid" class="btn btn-light btn-lg">Eid / Ramadan</a>
+            <a asp-page="/WaterAid" class="btn btn-light btn-lg">Water Aid</a>
+            <a asp-page="/Gaza" class="btn btn-light btn-lg">For Gaza</a>
+        </div>
+    </div>
+    <div class="hero-img col-lg-5 col-md-12 text-center mt-4 mt-lg-0">
+        <img class="img-fluid rounded-4 shadow-lg" src="~/Assets/Hero.jpg" alt="Hero Image">
+    </div>
+</section>
+
+
+<!-- Live Fund Monitor -->
+<section class="p-5 text-center bg-light">
+    <h2>Live Fund Monitor</h2>
+    <div class="progress mt-3 mx-auto" style="width: 60%;">
+        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 70%;">
+            70%
+        </div>
+    </div>
+</section>
+
+<!-- Donation Categories -->
+<section class="p-5 bg-secondary bg-opacity-25">
+    <h1 class="text-center pb-4">Events</h1>
+    <div class="container text-center">
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="card p-4 shadow-sm h-100">
+                    <h5>Orphans</h5>
+                    <p>Support children in need.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 shadow-sm h-100">
+                    <h5>Old Home</h5>
+                    <p>Care for the elderly.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 shadow-sm h-100">
+                    <h5>Zakat</h5>
+                    <p>It’s your responsibility.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 shadow-sm h-100">
+                    <h5>Eid & Ramadan</h5>
+                    <p>Help the poor people.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 shadow-sm h-100">
+                    <h5>Water Aid</h5>
+                    <p>Come forward for the flood affected people.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 shadow-sm h-100">
+                    <h5>For Gaza</h5>
+                    <p>Help the people of Gaza during this extreme starvation and hardship.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

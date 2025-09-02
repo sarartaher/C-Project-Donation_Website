@@ -1,0 +1,340 @@
+:root {
+    --nav-header-color: #970747;
+    --nav-text: #FFD700;
+    --login-card: #002C54;
+    --home-hero: linear-gradient(86deg, #C7032A, #610119);
+    --old-hero: linear-gradient(100deg, #D50E37, #1D5364);
+    --old-qoute: #008000;
+    --old-story: linear-gradient(100deg, #FFBA03, #FFFFFF);
+    --orphan-qou: #090202;
+    --orphan-blogs: #D9D9D9;
+    --aid-reason: #000000;
+    --aid-solution: #DCDDEC;
+}
+
+*{
+    scroll-behavior:smooth;
+    box-sizing:border-box;
+}
+nav{
+    background-color:var(--nav-header-color);
+}
+.nav-link, .navbar-brand{
+    color:var(--nav-text) !important;
+}
+.hero-home {
+    background: var(--home-hero);
+    min-height: 80vh;
+    padding: 60px 30px;
+    align-items: center;
+}
+
+    .hero-home .title {
+        font-size: 3rem; /* responsive */
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .hero-home .hero-description {
+        font-size: 1rem;
+        line-height: 1.7;
+        font-weight: 400;
+        text-align: justify;
+        max-height: 450px; /* optional, keeps hero tidy */
+        overflow-y: auto;
+    }
+
+.hero-buttons .btn {
+    font-size: 1rem;
+    padding: 12px 25px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+    .hero-buttons .btn:hover {
+        background-color: #ffd700;
+        color: #970747;
+    }
+
+.hero-img img {
+    border: 7px solid white;
+    border-radius: 15px;
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+/*<!--Old Aid page-->*/
+.Old-hero {
+    background: var(--old-hero) !important;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Styling for the Quotes section */
+.Old-qoute {
+    background: var(--old-qoute);
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Styling for the Stories section */
+.Old-story {
+    background: var(--old-story);
+}
+
+    .Old-story .card {
+        border-radius: 1rem;
+        border: none;
+    }
+
+    .Old-story .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .Old-story .btn {
+        background-color: #6c757d; /* A neutral color for the button */
+        border: none;
+    }
+
+        .Old-story .btn:hover {
+            background-color: #495057;
+        }
+.orphan-home {
+    background: url('/Assets/Orphan-bg.jpg') no-repeat top center;
+    background-size: cover;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.orphan-qou {
+    background: var(--orphan-qou);
+    padding: 60px 0;
+}
+
+.orphan-blogs {
+    background: var(--orphan-blogs);
+    padding: 60px 0;
+}
+
+    .orphan-blogs .card img {
+        height: 200px;
+        object-fit: cover;
+    }
+
+.aid-Rea {
+    background: var(--aid-reason);
+    padding: 60px 0;
+}
+
+.aid-hero .card img {
+    height: 220px;
+    object-fit: cover;
+}
+
+.aid-sol\&Don {
+    background: var(--aid-solution);
+    padding: 60px 0;
+}
+
+    .aid-sol\&Don .card {
+        border-radius: 12px;
+    }
+
+    .aid-sol\&Don .btn {
+        margin-top: 10px;
+    }
+/*<!--Zakat page-- >*/
+#hero-zakat {
+    background: linear-gradient(to right, #2c7761, #51a681);
+}
+#zakat-calc .zakat-card {
+    background: #372338;
+    border: 3px solid transparent;
+    border-image: linear-gradient(to right, #bd1b77, #931899) 1;
+}
+
+#zakat-calc .form-control {
+    background-color: #5d5d85;
+    border: none;
+    color: white;
+}
+
+    #zakat-calc .form-control::placeholder {
+        color: #b0b0b0;
+    }
+
+#zakat-calc .zakat-result-box {
+    background-color: #931899;
+}
+/*<!--Eid / Ramadan Page-- >*/
+#eid-ramadan-hero {
+    position: relative;
+    background-image: url('path/to/your/ramadan-eid-image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Optional: for parallax effect */
+    min-height: 80vh;
+}
+
+#eid-ramadan-hero .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+}
+
+#donation-types .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    #donation-types .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+    }
+
+    #donation-types .card i {
+        color: #4CAF50; /* Adjust icon color as needed */
+    }
+/*<!--Gaza Section-- >*/
+#hero-gaza {
+    position: relative;
+    background-image: url('path/to/your/image.jpg'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+}
+/*<!--Signup part-->*/
+.left-panel {
+    background-color: #007bff;
+    color: #fff;
+    position: relative;
+}
+
+.right-panel {
+    background-color: #6a1b9a;
+    color: #fff;
+}
+
+.btn-signin {
+    background: #e91e63;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-weight: 600;
+    color: #fff;
+    transition: 0.3s;
+}
+
+    .btn-signin:hover {
+        background: #d81b60;
+    }
+
+.btn-signup {
+    background: #f1f1f1;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 30px;
+    font-weight: 700;
+    color: #000;
+    transition: 0.3s;
+}
+
+    .btn-signup:hover {
+        background: #ddd;
+    }
+
+/* Shapes */
+.shape-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #4CAF50;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.shape-star-top {
+    color: red;
+    font-size: 60px;
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}
+
+.shape-star-bottom {
+    color: orange;
+    font-size: 60px;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
+
+.shape-triangle {
+    width: 0;
+    height: 0;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-top: 70px solid #00bcd4;
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+}
+.login-card{
+    background: var(--login-card);
+}
+    .login-card .card-title {
+        color: #FFFFFF;
+    }
+    .login-card .btn {
+        background-color: #D0FFFE;
+    }
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}

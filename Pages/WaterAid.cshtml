@@ -1,0 +1,96 @@
+﻿@page
+@model Donation_Website.Pages.WaterAidModel
+@{
+    ViewData["Title"] = "Water Aid";
+}
+
+<!-- Reasons Section -->
+<section class="aid-Rea text-light py-5">
+    <div class="container">
+        <h1 class="text-center mb-4">Why Water Aid is Needed</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <p class="mb-3">Millions of people around the world lack access to safe and clean drinking water. Children often walk long distances to fetch water from contaminated sources, leading to disease, malnutrition, and missed school days.</p>
+                <p class="mb-3">Natural disasters like floods and droughts destroy water sources and infrastructure, leaving entire communities vulnerable.</p>
+                <p class="mb-3">Rural and underserved areas remain particularly affected, where local governments cannot provide adequate water supply.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stories Section -->
+<section class="aid-hero py-5 bg-light">
+    <div class="container">
+        <h1 class="text-center pb-4">Stories from the Field</h1>
+        <div class="row g-4">
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-lg rounded-4">
+                    <img src="/Assets/Flood_1.jpg" class="card-img-top img-fluid" alt="Flood Relief 1">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Struggle for Pure Water</h5>
+                        <p class="card-text">During floods, families often lose access to clean water, forcing children to drink unsafe water and risk disease.</p>
+                        <a href="/Donate" class="btn btn-primary mt-auto">Donate Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-lg rounded-4">
+                    <img src="/Assets/Water_project.jpg" class="card-img-top img-fluid" alt="Water Project">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Establishing Water Sources</h5>
+                        <p class="card-text">We build wells and filtration systems in rural areas so communities have consistent access to safe drinking water.</p>
+                        <a href="/Donate" class="btn btn-primary mt-auto">Donate Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-lg rounded-4">
+                    <img src="/Assets/flood_3.jpg" class="card-img-top img-fluid" alt="Flood Relief 3">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Distributing Water to Helpless Families</h5>
+                        <p class="card-text">In disaster-hit areas, we provide bottled water and hydration kits to prevent dehydration and illness.</p>
+                        <a href="/Donate" class="btn btn-primary mt-auto">Donate Now</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Solutions & Donations Section -->
+<section class="aid-sol&Don py-5 bg-secondary bg-opacity-25">
+    <div class="container">
+        <h1 class="text-center mb-4">Our Solutions & How You Can Help</h1>
+        <div class="row g-4 text-center">
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm p-3">
+                    <h5>Build Wells & Filtration Systems</h5>
+                    <p>Provide clean water to communities in need by funding water wells and filtration units.</p>
+                    <a href="/Donate" class="btn btn-success">Donate Now</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm p-3">
+                    <h5>Emergency Relief</h5>
+                    <p>Support families affected by floods, droughts, or disasters with safe drinking water kits and supplies.</p>
+                    <a href="/Donate" class="btn btn-success">Donate Now</a>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm p-3">
+                    <h5>Community Awareness</h5>
+                    <p>Help educate communities on water hygiene, sanitation, and safe water usage practices.</p>
+                    <a href="/Donate" class="btn btn-success">Donate Now</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

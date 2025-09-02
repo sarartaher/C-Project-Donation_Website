@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - United Charity Hub</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Donation_Website.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg px-4">
+            <a class="navbar-brand" asp-page="/Index">United Charity Hub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto align-items-sm-center ">
+                    <li class="nav-item"><a class="nav-link" asp-page="/Index" >Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-page="/About">About</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-page="/Donation">Donation</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-page="/Contact">Contact</a></li>
+                </ul>
+                <div class="">
+                    <a class="btn btn-light" asp-page="">Cart</a>
+                    <a class="btn btn-outline-primary me-2" asp-page="/Login">Login</a>
+                    <a class="btn btn-primary" asp-page="/Signup">Signup</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="bg-dark text-light pt-5 py-3">
+        <div class="container text-center text-md-start">
+            <div class="row text-center text-md-start">
+
+                <!-- Section 1 -->
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold">Our Goal</h5>
+                    <p>
+                        Short description about your company or website.
+                        You can add mission statement or tagline here.
+                    </p>
+                </div>
+
+                <!-- Section 2 -->
+                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold">Quick Links</h5>
+                    <p><a asp-page="/Index" class="text-light text-decoration-none">Home</a></p>
+                    <p><a asp-page="/About" class="text-light text-decoration-none">About</a></p>
+                    <p><a asp-page="/Donation" class="text-light text-decoration-none">Donation</a></p>
+                    <p><a asp-page="/Contact" class="text-light text-decoration-none">Contact</a></p>
+                </div>
+
+                <!-- Section 3 -->
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold">Resources</h5>
+                    <p><a href="#" class="text-light text-decoration-none">Blog</a></p>
+                    <p><a href="#" class="text-light text-decoration-none">FAQs</a></p>
+                    <p><a href="#" class="text-light text-decoration-none">Privacy Policy</a></p>
+                    <p><a href="#" class="text-light text-decoration-none">Terms</a></p>
+                </div>
+
+                <!-- Section 4 -->
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h5 class="text-uppercase mb-4 fw-bold">Contact</h5>
+                    <p><i class="bi bi-house-door-fill me-2"></i>Dhaka, Bangladesh</p>
+                    <p><i class="bi bi-envelope-fill me-2"></i>info@example.com</p>
+                    <p><i class="bi bi-telephone-fill me-2"></i>+880 123 456 789</p>
+                    <p><i class="bi bi-printer-fill me-2"></i>+880 987 654 321</p>
+                </div>
+
+            </div>
+            <hr class="my-3">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-8 col-lg-8">
+                    <p class="text-center">&copy; 2025 - United Charity Hub. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+            
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

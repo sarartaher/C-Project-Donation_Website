@@ -1,0 +1,37 @@
+﻿@page
+@model Donation_Website.Pages.SignupModel
+@{
+    ViewData["Title"] = "Sign Up";
+}
+<section class="container">
+    <div class="row shadow-lg rounded-4 overflow-hidden py-5" style="max-width: 1000px; margin: auto;">
+
+        <!-- Left Panel -->
+        <div class="col-md-6 d-flex flex-column justify-content-center align-items-center text-center left-panel p-5">
+
+            <!-- Shapes -->
+            <div class="shape-circle"></div>
+            <i class="bi bi-star-fill shape-star-top"></i>
+            <i class="bi bi-star-fill shape-star-bottom"></i>
+            <div class="shape-triangle"></div>
+
+            <h2 class="fw-bold text-white mb-4">UNITED CHARITY HUB</h2>
+            <h4 class="mb-3">Welcome Back!!!</h4>
+            <button class="btn-signin">SIGN IN</button>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="col-md-6 right-panel p-5">
+            <h2 class="fw-bold text-white mb-4 text-center">CREATE ACCOUNT</h2>
+            <form>
+                <input type="text" class="form-control form-control-lg mb-3" placeholder="Enter Your Name">
+                <input type="email" class="form-control form-control-lg mb-3" placeholder="Enter Your Email">
+                <input type="password" class="form-control form-control-lg mb-4" placeholder="Enter Secure Password">
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn-signup">SIGN UP</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>

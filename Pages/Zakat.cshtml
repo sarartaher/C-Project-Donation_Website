@@ -1,0 +1,43 @@
+﻿@page
+@model Donation_Website.Pages.ZakatModel
+@{
+    ViewData["Title"] = "Zakat";
+}
+@* Hero Section *@
+<section id="hero-zakat" class="container-fluid py-5">
+    <div class="row align-items-center">
+        <div class="col-md-6 text-white text-center text-md-start">
+            <h1 class="display-1 fw-bold text-center">ZAKAT</h1>
+        </div>
+        <div class="col-md-6 mt-4 mt-md-0">
+            <div class="bg-light p-4 rounded" style="min-height: 200px;">
+            </div>
+        </div>
+    </div>
+</section>
+@* Zakat-calculator *@
+<section id="zakat-calc" class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="zakat-card p-4 rounded-3 text-center text-white">
+                <p class="fs-5 fw-bold mb-4">Your zakat is calculated by one year cycle with 2.5% total valuation</p>
+                <div class="row g-4 justify-content-center mb-4">
+                    <div class="col-lg-5">
+                        <label for="money" class="form-label fs-6 fw-bold">Your money:</label>
+                        <input type="number" class="form-control" id="money" placeholder="Enter amount">
+                    </div>
+                    <div class="col-lg-5">
+                        <label for="property" class="form-label fs-6 fw-bold">Your property valuation :</label>
+                        <input type="number" class="form-control" id="property" placeholder="Enter amount">
+                    </div>
+                </div>
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-lg-6">
+                        <label for="zakat-amount" class="form-label fs-6 fw-bold">Your Zakat:</label>
+                        <input type="text" class="form-control form-control-lg zakat-result-box" id="zakat-amount" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
