@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,10 +30,24 @@
                     <li class="nav-item"><a class="nav-link" asp-page="/Donation">Donation</a></li>
                     <li class="nav-item"><a class="nav-link" asp-page="/Contact">Contact</a></li>
                 </ul>
-                <div class="">
+                <div class="d-flex gap-4 align-items-center justify-content-center">
                     <a class="btn btn-light" asp-page="">Cart</a>
-                    <a class="btn btn-outline-primary me-2" asp-page="/Login">Login</a>
-                    <a class="btn btn-primary" asp-page="/Signup">Signup</a>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString("UserName") == null)
+                    {
+                        <a asp-page="/Login" class="btn btn-info">Login</a>
+                        <a asp-page="/Signup" class="btn btn-outline-info">Signup</a>
+                    }
+                    else
+                    {
+                        <div class="d-flex justify-content-center align-items-center gap-4">
+
+                        <span class="text-white 3xl">Hello, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+                        <form method="post" asp-page="/Login">
+                            <button type="submit" class="btn btn-dark ">Logout</button>
+                        </form>
+                        </div>
+                    }
+
                 </div>
             </div>
         </nav>

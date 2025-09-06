@@ -8,12 +8,12 @@
     <div class="card text-center p-5 shadow-lg login-card rounded-4 h-50 login-card">
         <div class="card-body">
             <h3 class="card-title my-4 text-uppercase fw-bold site-title ">United Charity Hub</h3>
-            <form class="p-3 my-auto">
+            <form method="post" class="p-3 my-auto">
                 <div class="mb-4 ">
-                    <input type="email" class="form-control  input-box " placeholder="Enter your email">
+                    <input type="email" asp-for="NewUser.Email" class="form-control  input-box " placeholder="Enter your email">
                 </div>
                 <div class="mb-4">
-                    <input type="password" class="form-control   input-box" placeholder="Enter your password">
+                    <input type="password" asp-for="NewUser.PasswordHash" class="form-control   input-box" placeholder="Enter your password">
                 </div>
                 <button type="submit" class="btn rounded-4 px-5 login-btn fw-bold mt-5 ">Log In</button>
             </form>

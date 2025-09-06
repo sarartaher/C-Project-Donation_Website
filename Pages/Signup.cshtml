@@ -23,10 +23,15 @@
         <!-- Right Panel -->
         <div class="col-md-6 right-panel p-5">
             <h2 class="fw-bold text-white mb-4 text-center">CREATE ACCOUNT</h2>
-            <form>
-                <input type="text" class="form-control form-control-lg mb-3" placeholder="Enter Your Name">
-                <input type="email" class="form-control form-control-lg mb-3" placeholder="Enter Your Email">
-                <input type="password" class="form-control form-control-lg mb-4" placeholder="Enter Secure Password">
+            <form method="post">
+                <input type="text" asp-for="NewUser.Name" class="form-control form-control-lg mb-3" placeholder="Enter Your Name">
+                <input type="email" asp-for="NewUser.Email" class="form-control form-control-lg mb-3" placeholder="Enter Your Email">
+                <input type="password" asp-for="NewUser.PasswordHash" class="form-control form-control-lg mb-4" placeholder="Enter Secure Password">
+
+                <!-- Optional fields if your DB has them -->
+                <input type="text" asp-for="NewUser.Phone" class="form-control form-control-lg mb-3" placeholder="Phone (optional)">
+                <input type="text" asp-for="NewUser.Address" class="form-control form-control-lg mb-3" placeholder="Address (optional)">
+
                 <div class="d-flex justify-content-center">
                     <button type="submit" class="btn-signup">SIGN UP</button>
                 </div>
