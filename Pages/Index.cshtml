@@ -106,3 +106,77 @@
         </div>
     </div>
 </section>
+<!--Comment Section-->
+<section class="comment-section py-5 mx-auto" style="max-width:860px;">
+    <div class="container">
+        <h2 class="mb-4 text-center">Comments</h2>
+
+        <!-- Comment Form -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="commentName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="commentName" placeholder="Your Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="commentEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="commentEmail" placeholder="Your Email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="commentContent" class="form-label">Comment</label>
+                        <textarea class="form-control" id="commentContent" rows="3" placeholder="Your Comment"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post Comment</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Comments List -->
+        <div class="comments-list">
+            <!-- Comment 1 -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="User Avatar">
+                        <div>
+                            <h5 class="card-title mb-0">John Doe</h5>
+                            <small class="text-muted">Posted on July 17, 2024</small>
+                        </div>
+                    </div>
+                    <p class="card-text">This is a great article! I learned a lot from it. Keep up the good work!</p>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-outline-primary me-2">
+                            <i class="bi bi-hand-thumbs-up"></i> Like
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-reply"></i> Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comment 2 -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="User Avatar">
+                        <div>
+                            <h5 class="card-title mb-0">Jane Smith</h5>
+                            <small class="text-muted">Posted on July 16, 2024</small>
+                        </div>
+                    </div>
+                    <p class="card-text">I have a question about one of the points you made. Could you elaborate more on...</p>
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-sm btn-outline-primary me-2">
+                            <i class="bi bi-hand-thumbs-up"></i> Like
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-reply"></i> Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
