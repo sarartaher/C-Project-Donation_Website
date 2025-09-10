@@ -5,9 +5,9 @@ namespace Donation_Website.Pages
 {
     public class LogoutModel : PageModel
     {
-        public IActionResult OnGet()
+        public IActionResult OnPost()
         {
-            HttpContext.Session.Clear(); 
+            HttpContext.Session.Clear();
             return RedirectToPage("/Login"); 
         }
     }
