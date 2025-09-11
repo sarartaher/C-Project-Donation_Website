@@ -126,5 +126,4 @@ Orphanage Support • Water in Africa • Gaza Relief • Old Age Home Care • 
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/yourusername/donation-management-system.git
-cd donation-management-system
+gh repo clone sarartaher/C-Project-Donation_Website
