@@ -1,0 +1,55 @@
+﻿@page
+@model Donation_Website.Pages.ViewListsModel
+@{
+}
+<div class="container mt-4">
+    <h2>View Lists</h2>
+    <p>View volunteer, organization, and event lists.</p>
+    <div class="accordion" id="listsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Volunteers
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#listsAccordion">
+                <div class="accordion-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">Volunteer 1</li>
+                        <li class="list-group-item">Volunteer 2</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Organizations
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#listsAccordion">
+                <div class="accordion-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">Organization A</li>
+                        <li class="list-group-item">Organization B</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Events
+                </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#listsAccordion">
+                <div class="accordion-body">
+                    <ul class="list-group">
+                        <li class="list-group-item">Event X</li>
+                        <li class="list-group-item">Event Y</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

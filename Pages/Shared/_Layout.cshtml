@@ -40,11 +40,24 @@
                     else
                     {
                         <div class="d-flex justify-content-center align-items-center gap-4">
+                            <span class="text-white 3xl">Hello, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
 
-                        <span class="text-white 3xl">Hello, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
-                        <form method="post" asp-page="/Login">
-                            <button type="submit" class="btn btn-dark ">Logout</button>
-                        </form>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-page="/Admindashboard" class="btn btn-success">Dashboard</a>
+                            }
+                            else if (User.IsInRole("Donor"))
+                            {
+                                <a asp-page="/Donordashboard" class="btn btn-primary">Dashboard</a>
+                            }
+                            else if (User.IsInRole("Volunteer"))
+                            {
+                                <a asp-page="/Volunteerdashboard" class="btn btn-info">Dashboard</a>
+                            }
+
+                            <form method="post" asp-page="/Login">
+                                <button type="submit" class="btn btn-dark ">Logout</button>
+                            </form>
                             <a asp-page="/Signup" class="btn btn-outline-info">Signup</a>
                         </div>
                     }
