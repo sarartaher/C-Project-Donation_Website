@@ -1,4 +1,154 @@
 ﻿@page
 @model Donation_Website.Pages.AboutModel
 @{
+    ViewData["Title"] = "About";
 }
+<section> 
+
+
+<div class="about-section py-5 text-center text-white">
+    <div class="row mb-5 justify-content-center">
+        <div class="col-10">
+            <h2 class="mb-3 fw-bold">Our History</h2>
+            <p class="lead">
+                United Charity Hub was founded in 2024 with the vision of supporting communities
+                in need. Over the years, we have worked for helpless people, healthcare, disaster relief,
+                water donation, Eid/Ramadan gift, tree plantation, and winter cloth distribution.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================== Mission Section ================== -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="p-4 shadow d-flex flex-wrap align-items-center"
+                 style="background-color: #5BC2B3; border-radius: 20px;">
+
+                <!-- Image -->
+                <div class="col-md-6 pe-3 mb-3 mb-md-0">
+                    <img src="/images/mission.jpg"
+                         class="img-fluid rounded shadow"
+                         alt="Our Mission">
+                </div>
+
+                <!-- Text -->
+                <div class="col-md-6 text-white">
+                    <h3>Our Mission</h3>
+                    <p>
+                        Our mission is to bring hope, relief, and sustainable support to underprivileged communities through collective efforts.
+                        We believe that every person deserves to live with dignity, security, and opportunity, regardless of their circumstances.
+                        <br><br>
+                        We aim to serve humanity with compassion, fairness, and kindness by focusing on:
+                    </p>
+                    <ul>
+                        <li>Zakat & Charity – Uplifting lives through fair distribution</li>
+                        <li>Orphan Care – Providing orphans with food, shelter, and education</li>
+                        <li>Gaza – Providing donation and food support for people</li>
+                        <li>Tree Plantation – Encouraging environmental responsibility</li>
+                        <li>Eid & Ramadan Aid – Delivering food packages and clothes</li>
+                        <li>Natural Disaster Relief – Providing shelter, food, and rebuilding</li>
+                        <li>Home Repair Assistance – Supporting safe homes for low-income families</li>
+                        <li>Water Aid – Providing clean drinking water and wells</li>
+                        <li>Winter Relief – Distributing blankets and warm clothing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== Team Section ================== -->
+<div class="container my-5">
+    <div class="row mb-5 text-center justify-content-center">
+        <h2 class="mb-4 text-primary">Meet Our Team</h2>
+
+        <div class="col-md-2 col-sm-4 mb-4">
+            <div class="team-card">
+                <img src="/images/member1.jpg" class="rounded-circle mx-auto mt-3 team-img" alt="SARAR">
+                <h5 class="card-title mt-3">SARAR</h5>
+                <p class="card-text">FRONTEND & BACKEND</p>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 mb-4">
+            <div class="team-card">
+                <img src="/images/member2.jpg" class="rounded-circle mx-auto mt-3 team-img" alt="NAHIN">
+                <h5 class="card-title mt-3">NAHIN</h5>
+                <p class="card-text">DATABASE & ER DIAGRAM</p>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 mb-4">
+            <div class="team-card">
+                <img src="/images/member3.jpg" class="rounded-circle mx-auto mt-3 team-img" alt="RAHIN">
+                <h5 class="card-title mt-3">RAHIN</h5>
+                <p class="card-text">FRONTEND & FIGMA Design</p>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 mb-4">
+            <div class="team-card">
+                <img src="/images/member4.jpg" class="rounded-circle mx-auto mt-3 team-img" alt="JAWAD">
+                <h5 class="card-title mt-3">JAWAD</h5>
+                <p class="card-text">ROLE</p>
+            </div>
+        </div>
+
+        <div class="col-md-2 col-sm-4 mb-4">
+            <div class="team-card">
+                <img src="/images/member5.jpg" class="rounded-circle mx-auto mt-3 team-img" alt="Member 5">
+                <h5 class="card-title mt-3">Your Name 5</h5>
+                <p class="card-text">ROLE</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================== Work in Action Section ================== -->
+<div class="container my-5">
+    <h2 class="mb-4 text-center text-primary">Our Work in Action</h2>
+
+    <div class="work-slider d-flex justify-content-center align-items-center">
+        <div class="slider-wrapper">
+            <div class="slider-track">
+                <!-- 10 Photos -->
+                <div class="slide"><img src="/images/work1.jpg" alt="Work 1"></div>
+                <div class="slide"><img src="/images/work2.jpg" alt="Work 2"></div>
+                <div class="slide"><img src="/images/work3.jpg" alt="Work 3"></div>
+                <div class="slide"><img src="/images/work4.jpg" alt="Work 4"></div>
+                <div class="slide"><img src="/images/work5.jpg" alt="Work 5"></div>
+                <div class="slide"><img src="/images/work6.jpg" alt="Work 6"></div>
+                <div class="slide"><img src="/images/work7.jpg" alt="Work 7"></div>
+                <div class="slide"><img src="/images/work8.jpg" alt="Work 8"></div>
+                <div class="slide"><img src="/images/work9.jpg" alt="Work 9"></div>
+                <div class="slide"><img src="/images/work10.jpg" alt="Work 10"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<script>
+    const slides = document.querySelectorAll('.slide');
+    let currentIndex = 1;
+    const totalSlides = slides.length;
+
+    function updateSlides() {
+        slides.forEach(slide => slide.classList.remove('active'));
+        slides[currentIndex].classList.add('active');
+        const track = document.querySelector('.slider-track');
+        const offset = -(currentIndex - 1) * (100 / 3);
+        track.style.transform = `translateX(${offset}%)`;
+    }
+
+    setInterval(() => {
+        currentIndex++;
+        if (currentIndex >= totalSlides - 1) {
+            currentIndex = 1;
+        }
+        updateSlides();
+    }, 2000);
+
+    updateSlides();
+</script>

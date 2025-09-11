@@ -21,91 +21,157 @@
 </section>
 
 
-<!-- Live Fund Monitor -->
+
 <section class="p-5 text-center bg-light">
-    <h2>Live Fund Monitor</h2>
-    <div class="progress mt-3 mx-auto" style="width: 60%;">
-        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 70%;">
-            70%
+    <div class="container">
+        <h2 class="mb-4 fw-bold">Live Fund Monitor</h2>
+
+        <div class="progress progress-lg rounded-pill mx-auto" style="height: 30px; max-width: 600px;">
+            <div class="progress-bar progress-bar-striped bg-success progress-bar-animated rounded-pill"
+                 role="progressbar"
+                 style="width:@Model.Percentage%;"
+                 aria-valuenow="@Model.Percentage"
+                 aria-valuemin="0"
+                 aria-valuemax="100">
+                @Model.Percentage%
+            </div>
+        </div>
+
+        <p class="mt-3 fs-5">
+            Collected: <strong>৳@Model.TotalCollected</strong> of ৳100,000
+        </p>
+    </div>
+</section>
+
+<section class="p-5 bg-light text-center position-relative">
+    <div class="container">
+        <h2 class="mb-4 fw-bold">Top Donors</h2>
+
+        <!-- Floating coins container -->
+        <div class="floating-coins">
+            <span class="coin">💰</span>
+            <span class="coin">🪙</span>
+            <span class="coin">💵</span>
+            <span class="coin">💰</span>
+            <span class="coin">🪙</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover shadow-sm mx-auto animated-donation-table" style="max-width:700px;">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th scope="col">Rank</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Total Donation (৳)</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    @if (Model.TopDonors != null)
+                    {
+                        int rank = 1;
+                        foreach (var donor in Model.TopDonors)
+                        {
+                            <tr class="donor-row">
+                                <td class="rank-cell">@rank</td>
+                                <td class="name-cell">@donor.DonorName</td>
+                                <td class="amount-cell">৳@donor.TotalDonation.ToString("N2")</td>
+                            </tr>
+                            rank++;
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </section>
+
+
+
+
+
 
 <!-- Donation Categories -->
 <section class="p-5 bg-secondary bg-opacity-25">
-    <h1 class="text-center pb-4">Events</h1>
+    <h1 class="text-center pb-4 fw-bold">Events</h1>
     <div class="container text-center">
-        <div class="row g-4">
+        <div class="row g-4 justify-content-center">
 
-            <div class="col-md-4">
-                <a asp-page="/Orphanage">
-                    
-                <div class="card p-4 shadow-sm h-100">
-                    <h5>Orphans</h5>
-                    <p>Support children in need.</p>
-                </div>
+            <div class="col-md-4 col-sm-6">
+                <a asp-page="/Orphanage" class="text-decoration-none">
+                    <div class="card p-4 shadow-lg h-100 event-card position-relative overflow-hidden">
+                        <div class="card-icon bg-warning text-white rounded-circle mb-3 mx-auto">
+                            👶
+                        </div>
+                        <h5 class="card-title fw-bold">Orphans</h5>
+                        <p class="card-text text-muted">Support children in need.</p>
+                    </div>
                 </a>
-
             </div>
 
-            <div class="col-md-4">
-                <a asp-page="/OldHomeAid" >
-                    
-                <div class="card p-4 shadow-sm h-100">
-                    <h5>Old Home</h5>
-                    <p>Care for the elderly.</p>
-                </div>
+            <div class="col-md-4 col-sm-6">
+                <a asp-page="/OldHomeAid" class="text-decoration-none">
+                    <div class="card p-4 shadow-lg h-100 event-card position-relative overflow-hidden">
+                        <div class="card-icon bg-info text-white rounded-circle mb-3 mx-auto">
+                            👴
+                        </div>
+                        <h5 class="card-title fw-bold">Old Home</h5>
+                        <p class="card-text text-muted">Care for the elderly.</p>
+                    </div>
                 </a>
-
             </div>
 
-            <div class="col-md-4">
-                <a asp-page="/Zakat">
-                    
-                <div class="card p-4 shadow-sm h-100">
-                    <h5>Zakat</h5>
-                    <p>It’s your responsibility.</p>
-                </div>
+            <div class="col-md-4 col-sm-6">
+                <a asp-page="/Zakat" class="text-decoration-none">
+                    <div class="card p-4 shadow-lg h-100 event-card position-relative overflow-hidden">
+                        <div class="card-icon bg-success text-white rounded-circle mb-3 mx-auto">
+                            💰
+                        </div>
+                        <h5 class="card-title fw-bold">Zakat</h5>
+                        <p class="card-text text-muted">It’s your responsibility.</p>
+                    </div>
                 </a>
-
             </div>
 
-            <div class="col-md-4">
-                <a asp-page="/Eid">
-                    
-                <div class="card p-4 shadow-sm h-100">
-                    <h5>Eid & Ramadan</h5>
-                    <p>Help the poor people.</p>
-                </div>
+            <div class="col-md-4 col-sm-6">
+                <a asp-page="/Eid" class="text-decoration-none">
+                    <div class="card p-4 shadow-lg h-100 event-card position-relative overflow-hidden">
+                        <div class="card-icon bg-danger text-white rounded-circle mb-3 mx-auto">
+                            🎉
+                        </div>
+                        <h5 class="card-title fw-bold">Eid & Ramadan</h5>
+                        <p class="card-text text-muted">Help the poor people.</p>
+                    </div>
                 </a>
-
             </div>
 
-            <div class="col-md-4">
-                <a asp-page="/WaterAid">
-                    
-                <div class="card p-4 shadow-sm h-100">
-                    <h5>Water Aid</h5>
-                    <p>Come forward for the flood affected people.</p>
-                </div>
+            <div class="col-md-4 col-sm-6">
+                <a asp-page="/WaterAid" class="text-decoration-none">
+                    <div class="card p-4 shadow-lg h-100 event-card position-relative overflow-hidden">
+                        <div class="card-icon bg-primary text-white rounded-circle mb-3 mx-auto">
+                            💧
+                        </div>
+                        <h5 class="card-title fw-bold">Water Aid</h5>
+                        <p class="card-text text-muted">Come forward for the flood affected people.</p>
+                    </div>
                 </a>
-
             </div>
 
-            <div class="col-md-4">
-                <a asp-page="/Gaza" >
-                    
-                <div class="card p-4 shadow-sm h-100">
-                    <h5>For Gaza</h5>
-                    <p>Help the people of Gaza during this extreme starvation and hardship.</p>
-                </div>
+            <div class="col-md-4 col-sm-6">
+                <a asp-page="/Gaza" class="text-decoration-none">
+                    <div class="card p-4 shadow-lg h-100 event-card position-relative overflow-hidden">
+                        <div class="card-icon bg-secondary text-white rounded-circle mb-3 mx-auto">
+                            🌍
+                        </div>
+                        <h5 class="card-title fw-bold">For Gaza</h5>
+                        <p class="card-text text-muted">Help the people of Gaza during extreme hardship.</p>
+                    </div>
                 </a>
-
             </div>
 
         </div>
     </div>
 </section>
+
 <!--Comment Section-->
 <section class="comment-section py-5 mx-auto" style="max-width:860px;">
     <div class="container">
@@ -180,3 +246,8 @@
         </div>
     </div>
 </section>
+<script>
+    setInterval(function(){
+        location.reload();
+    }, 30000); // refresh every 30 seconds
+</script>
