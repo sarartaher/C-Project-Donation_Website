@@ -1,0 +1,18 @@
+﻿@page
+@model Donation_Website.Pages.RemoveUserModel
+@{
+}
+<section class="container mt-4">
+    <h2>Remove User</h2>
+    <p>Remove users if necessary.</p>
+    <div class="alert alert-warning" role="alert">
+        <strong>Warning:</strong> This action is permanent and cannot be undone.
+    </div>
+    <form method="post">
+        <div class="mb-3">
+            <label for="userId" class="form-label">User ID or Username</label>
+            <input type="text" class="form-control" id="userId" placeholder="Enter User ID or Username" required>
+        </div>
+        <button type="submit" class="btn btn-danger">Remove User</button>
+    </form>
+</section>

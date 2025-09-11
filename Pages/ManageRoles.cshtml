@@ -1,0 +1,39 @@
+﻿@page
+@model Donation_Website.Pages.ManageRolesModel
+@{
+
+}
+<section class="container mt-4">
+    <h2>User Role Management</h2>
+    <p>Assign, modify, or remove user roles.</p>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoleModal">Add New Role</button>
+    <div class="table-responsive mt-3">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Role ID</th>
+                    <th scope="col">Role Name</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Administrator</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-info">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Volunteer</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-info">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -197,9 +197,9 @@ nav{
 /*<!--Eid / Ramadan Page-- >*/
 #eid-ramadan-hero {
     position: relative;
-    background-image: url('path/to/your/ramadan-eid-image.jpg');
+    background-image: url('/Assets/Ramadan.png');
     background-size: cover;
-    background-position: center;
+    background-position: top;
     background-attachment: fixed; /* Optional: for parallax effect */
     min-height: 80vh;
 }
@@ -229,7 +229,7 @@ nav{
 /*<!--Gaza Section-- >*/
 #hero-gaza {
     position: relative;
-    background-image: url('path/to/your/image.jpg'); /* Replace with your image path */
+    background-image: url('/Assets/gazaT1.png'); 
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
