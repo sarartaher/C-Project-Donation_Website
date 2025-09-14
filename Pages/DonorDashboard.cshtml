@@ -2,10 +2,58 @@
 @model Donation_Website.Pages.DonorDashboardModel
 @{
     ViewData["Title"] = "Donor Dashboard";
+    var userName = Model.HttpContext.Session.GetString("UserName");
 }
 
 <section class="p-5">
-    <h1>Welcome, Donor!</h1>
-    <a class="btn btn-primary mt-3" asp-page="/Index">Go to Home</a>
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 rounded-3 mb-4">
+        <div class="text-center">
+            <h1 class="h3 fw-bold text-dark mb-0">Donor Dashboard</h1>
+            <div class="gap-3">
+                <span class="text-muted text-center display-6">Hello, <strong>@userName</strong></span>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Overview -->
+    <div class="bg-white shadow-sm rounded-3 p-4 mb-5">
+        <h2 class="h4 fw-semibold text-dark mb-3">System Overview</h2>
+        <p class="text-muted lh-base">
+            From here, you can make donations, view your donation history, manage receipts, track funded projects, and share reviews on completed works.
+        </p>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="row g-4">
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #dbeafe;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Make a Donation</h5>
+                    <p class="card-text text-dark">Securely donate to projects and fundraisers.</p>
+                    <div class="mt-auto">
+                        <button class="btn btn-primary">Donate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #fef3c7;">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">Donation History</h5>
+                    <p class="card-text text-dark">View all your donations with amounts, dates, and statuses.</p>
+                    <div class="mt-auto">
+                        <button class="btn btn-warning">History</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </section>
+
+
 

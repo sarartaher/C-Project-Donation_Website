@@ -5,75 +5,107 @@
     var userName = Model.HttpContext.Session.GetString("UserName");
 }
 
-<section class="min-h-screen bg-gray-100 p-8">
+<section class="min-vh-100 bg-light p-4">
     <!-- Header -->
-    <header class="flex justify-between items-center bg-white shadow p-6 rounded-xl mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-        <div class="flex items-center space-x-4">
-            <span class="text-gray-600">Hello, <strong>@userName</strong></span>
-            <a href="/" class="px-5 py-2 bg-blue-500 text-white rounded-lg hover:text-black transition">Go to Home</a>
-            <form method="post" asp-page="/Logout">
-                <button type="submit" class="px-5 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Logout</button>
-            </form>
+    <header class="bg-white shadow-sm p-4 rounded-3 mb-4">
+        <div class="text-center">
+            <h1 class="h3 fw-bold text-dark mb-0">Admin Dashboard</h1>
+            <div class="gap-3">
+                <span class="text-muted text-center display-6">Hello, <strong>@userName</strong></span>
+                
+            </div>
         </div>
     </header>
 
     <!-- Overview -->
-    <div class="bg-white shadow rounded-xl p-6 mb-10">
-        <h2 class="text-2xl font-semibold text-black mb-3">System Overview</h2>
-        <p class="text-gray-600 leading-relaxed">
+    <div class="bg-white shadow-sm rounded-3 p-4 mb-5">
+        <h2 class="h4 fw-semibold text-dark mb-3">System Overview</h2>
+        <p class="text-muted lh-base">
             From here, you can manage users, monitor events, track volunteers, and maintain overall system control.
         </p>
     </div>
 
     <!-- Feature Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        <div class="bg-blue-100 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <h3 class="text-lg font-semibold mb-3">User Role Management</h3>
-            <p class="text-gray-700 mb-4">Assign, modify, or remove user roles.</p>
-            <button class="px-4 py-2 bg-blue-500 text-black rounded-lg hover:bg-blue-600">Manage Roles</button>
+    <div class="row g-4">
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #dbeafe;">
+                <div class="card-body">
+                    <h5 class="card-title">User Role Management</h5>
+                    <p class="card-text text-dark">Assign, modify, or remove user roles.</p>
+                    <button class="btn btn-primary" onclick="location.href='@Url.Page("/ManageRoles")'">Manage Roles</button>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-green-100 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <h3 class="text-lg font-semibold mb-3">Event Management</h3>
-            <p class="text-gray-700 mb-4">Create, edit, turn on/off, or remove events.</p>
-            <button class="px-4 py-2 bg-green-500 text-black rounded-lg hover:bg-green-600">Manage Events</button>
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #dcfce7;">
+                <div class="card-body">
+                    <h5 class="card-title">Event Management</h5>
+                    <p class="card-text text-dark">Create, edit, turn on/off, or remove events.</p>
+                    <button onclick="location.href='@Url.Page("/ManageEvents")'" class="btn btn-success">Manage Events</button>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-red-100 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <h3 class="text-lg font-semibold mb-3">Remove User</h3>
-            <p class="text-gray-700 mb-4">Remove users if necessary.</p>
-            <button class="px-4 py-2 bg-red-500 text-black rounded-lg hover:bg-red-600">Remove</button>
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #fee2e2;">
+                <div class="card-body">
+                    <h5 class="card-title">Remove User</h5>
+                    <p class="card-text text-dark">Remove users if necessary.</p>
+                    <button onclick="location.href='@Url.Page("/RemoveUser")'" class="btn btn-danger">Remove</button>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-yellow-100 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <h3 class="text-lg font-semibold mb-3">Donor Monitoring</h3>
-            <p class="text-gray-700 mb-4">Track donor accounts and activity.</p>
-            <button class="px-4 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600">Monitor</button>
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #fef3c7;">
+                <div class="card-body">
+                    <h5 class="card-title">Donor Monitoring</h5>
+                    <p class="card-text text-dark">Track donor accounts and activity.</p>
+                    <button onclick="location.href='@Url.Page("/Monitor")'" class="btn btn-warning">Monitor</button>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-purple-100 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <h3 class="text-lg font-semibold mb-3">Volunteer Verification</h3>
-            <p class="text-gray-700 mb-4">Verify and track volunteer activities.</p>
-            <button class="px-4 py-2 bg-purple-500 text-black rounded-lg hover:bg-purple-600">Verify</button>
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #f3e8ff;">
+                <div class="card-body">
+                    <h5 class="card-title">Volunteer Verification</h5>
+                    <p class="card-text text-dark">Verify and track volunteer activities.</p>
+                    <button onclick="location.href='@Url.Page("/Verify")'" class="btn" style="background-color: #8b5cf6; color: white;">Verify</button>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-indigo-100 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <h3 class="text-lg font-semibold mb-3">View Lists</h3>
-            <p class="text-gray-700 mb-4">View volunteer, organization, and event lists.</p>
-            <button class="px-4 py-2 bg-indigo-500 text-black rounded-lg hover:bg-indigo-600">View</button>
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #e0e7ff;">
+                <div class="card-body">
+                    <h5 class="card-title">View Lists</h5>
+                    <p class="card-text text-dark">View volunteer, organization, and event lists.</p>
+                    <button onclick="location.href='@Url.Page("/ViewLists")'" class="btn btn-secondary" style="background-color: #6366f1;">View</button>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-teal-100 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <h3 class="text-lg font-semibold mb-3">Audit Log</h3>
-            <p class="text-gray-700 mb-4">Track all activities and system logs.</p>
-            <button class="px-4 py-2 bg-teal-500 text-black rounded-lg hover:bg-teal-600">Logs</button>
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #ccfbf1;">
+                <div class="card-body">
+                    <h5 class="card-title">Audit Log</h5>
+                    <p class="card-text text-dark">Track all activities and system logs.</p>
+                    <button onclick="location.href='@Url.Page("/Logs")'" class="btn btn-info">Logs</button>
+                </div>
+            </div>
         </div>
 
-        <div class="bg-pink-100 p-6 rounded-xl shadow hover:shadow-lg transition">
-            <h3 class="text-lg font-semibold mb-3">Fraud Detection</h3>
-            <p class="text-gray-700 mb-4">Monitor and detect fraudulent activity.</p>
-            <button class="px-4 py-2 bg-pink-500 text-black rounded-lg hover:bg-pink-600">Detect</button>
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #fce7f3;">
+                <div class="card-body">
+                    <h5 class="card-title">Fraud Detection</h5>
+                    <p class="card-text text-dark">Monitor and detect fraudulent activity.</p>
+                    <button onclick="location.href='@Url.Page("/Detect")'" class="btn" style="background-color: #ec4899; color: white;">Detect</button>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+

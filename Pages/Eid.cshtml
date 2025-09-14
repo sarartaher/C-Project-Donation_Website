@@ -10,7 +10,7 @@
         <p class="fs-5 mb-5">
             This blessed month, your generosity can bring immense joy. Donate your Zakat and Sadaqah to help provide food, shelter, and a reason to smile for families in need this Eid.
         </p>
-        <a href="#donation-types" class="btn btn-light btn-lg rounded-pill px-4 py-2 fw-bold">Donate Now</a>
+        <a asp-page="/Donation" class="btn btn-light btn-lg rounded-pill px-4 py-2 fw-bold">Donate Now</a>
     </div>
 </section>
 
@@ -77,6 +77,6 @@
         <p class="lead text-muted mb-4">
             Your support can change a life. Join our community of givers and share the blessings of this holy month.
         </p>
-        <button class="btn btn-primary btn-lg rounded-pill px-5">Give Now</button>
+        <button onclick="location.href='@Url.Page("/Donation")'" class="btn btn-primary btn-lg rounded-pill px-5">Give Now</button>
     </div>
 </section>
