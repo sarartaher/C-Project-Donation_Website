@@ -1,6 +1,9 @@
+using Donation_Website.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Donation_Website.Models;
+using System.Drawing;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Donation_Website.Pages
 {
@@ -31,7 +34,7 @@ namespace Donation_Website.Pages
                         break;
 
                     case Donor donor:
-                        passwordValid = Users.VerifyPassword(NewUser.PasswordHash, donor.PasswordHash);
+                        passwordValid = Users.VerifyPassword(NewUser.PasswordHash, donor.PasswordHash);                     
                         if (passwordValid)
                         {
                             HttpContext.Session.SetString("UserName", donor.Name);
@@ -41,7 +44,8 @@ namespace Donation_Website.Pages
                         break;
 
                     case Volunteer volunteer:
-                        if (NewUser.Email == volunteer.Email)
+                        passwordValid = Users.VerifyPassword(NewUser.PasswordHash, volunteer.PasswordHash);
+                        if (passwordValid)
                         {
                             HttpContext.Session.SetString("UserName", volunteer.Name);
                             HttpContext.Session.SetString("UserType", "Volunteer");

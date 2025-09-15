@@ -20,7 +20,7 @@ namespace Donation_Website.Pages
                 return Page();
 
            
-            byte[] hashedPassword = Users.HashPasswordForDatabase(NewUser.PasswordHash);
+            string hashedPassword = Users.HashPasswordForDatabase(NewUser.PasswordHash);
 
             using (var cmd = sda.GetQuery(
                 "INSERT INTO Donor (Name, Email, PasswordHash, Phone, Address, CreatedAt, UpdatedAt) " +

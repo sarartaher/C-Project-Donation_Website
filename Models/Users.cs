@@ -7,11 +7,10 @@ namespace Donation_Website.Models
     public class Users
     {
         DBConnection sda = new DBConnection();
-
+        
         public (object? User, string UserType) SearchUser(string email)
         {
-            // 1. Check Admin
-            using (var cmd = sda.GetQuery("SELECT AdminID, Name, Email, PasswordHash, Role, IsActive, CreatedAt, UpdatedAt FROM [Admin] WHERE Email = @Email"))
+            using (var cmd = sda.GetQuery("SELECT AdminID, Name, Email, PasswordHash, Phone, Address, IsActive, CreatedAt, UpdatedAt FROM [Admin] WHERE Email = @Email"))
             {
                 cmd.Parameters.AddWithValue("@Email", email);
                 cmd.Connection.Open();
@@ -19,17 +18,20 @@ namespace Donation_Website.Models
                 {
                     if (reader.Read())
                     {
+
                         var admin = new Admin
                         {
                             AdminId = Convert.ToInt32(reader["AdminID"]),
                             Name = reader["Name"].ToString()!,
                             Email = reader["Email"].ToString()!,
-                            PasswordHash = (byte[])reader["PasswordHash"],
-                            Role = reader["Role"].ToString()!,
+                            PasswordHash = reader["PasswordHash"]?.ToString() ?? "",  // read as string safely
+                            Phone = reader["Phone"]?.ToString(),
+                            Address = reader["Address"]?.ToString(),
                             IsActive = Convert.ToInt32(reader["IsActive"]),
                             CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                             UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedAt"])
                         };
+
                         return (admin, "Admin");
                     }
                 }
@@ -44,24 +46,26 @@ namespace Donation_Website.Models
                 {
                     if (reader.Read())
                     {
+                        
                         var donor = new Donor
                         {
                             DonorID = Convert.ToInt32(reader["DonorID"]),
                             Name = reader["Name"].ToString()!,
                             Email = reader["Email"].ToString()!,
-                            PasswordHash = (byte[])reader["PasswordHash"],
+                            PasswordHash = reader["PasswordHash"]?.ToString() ?? "",  // read as string safely
                             Phone = reader["Phone"].ToString()!,
                             Address = reader["Address"].ToString()!,
                             CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                             UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedAt"])
                         };
+
                         return (donor, "Donor");
                     }
                 }
             }
 
             // 3. Check Volunteer
-            using (var cmd = sda.GetQuery("SELECT VolunteerID, Name, Email, PasswordHash, Phone, Address, Skills, Availability, CreatedAt, UpdatedAt FROM [Volunteer] WHERE Email = @Email"))
+            using (var cmd = sda.GetQuery("SELECT VolunteerID, Name, Email, PasswordHash, Phone, Address, Skill, Availability, CreatedAt, UpdatedAt, IsActive FROM [Volunteer] WHERE Email = @Email"))
             {
                 cmd.Parameters.AddWithValue("@Email", email);
                 cmd.Connection.Open();
@@ -69,18 +73,20 @@ namespace Donation_Website.Models
                 {
                     if (reader.Read())
                     {
+                        var hashString = reader["PasswordHash"]?.ToString() ?? "";
                         var volunteer = new Volunteer
                         {
                             VolunteerID = Convert.ToInt32(reader["VolunteerID"]),
                             Name = reader["Name"].ToString()!,
                             Email = reader["Email"].ToString()!,
-                            PasswordHash = reader["PasswordHash"].ToString()!, // Assuming volunteer password is stored as string
+                            PasswordHash = reader["PasswordHash"]?.ToString() ?? "",  // read as string safely
                             Phone = reader["Phone"].ToString(),
                             Address = reader["Address"].ToString(),
-                            //Skills = reader["Skills"].ToString(),
-                            //Availability = reader["Availability"].ToString(),
+                            Skill = reader["Skill"].ToString(),
+                            Availability = reader["Availability"].ToString(),
                             CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-                            UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedAt"])
+                            UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedAt"]),
+                            IsActive = Convert.ToInt32(reader["IsActive"])
                         };
                         return (volunteer, "Volunteer");
                     }
@@ -90,18 +96,21 @@ namespace Donation_Website.Models
             return (null, "NotFound");
         }
 
-        public static bool VerifyPassword(string enteredPassword, byte[] storedHash)
+        public static bool VerifyPassword(string enteredPassword, string storedHash)
         {
             using var sha256 = SHA256.Create();
-            var enteredBytes = Encoding.UTF8.GetBytes(enteredPassword);
-            var enteredHash = sha256.ComputeHash(enteredBytes);
-            return enteredHash.SequenceEqual(storedHash);
+            byte[] enteredBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(enteredPassword));
+            string enteredHash = Convert.ToBase64String(enteredBytes);
+            return enteredHash == storedHash;
         }
 
-        public static byte[] HashPasswordForDatabase(string plainPassword)
+        public static string HashPasswordForDatabase(string plainPassword)
         {
             using var sha256 = SHA256.Create();
-            return sha256.ComputeHash(Encoding.UTF8.GetBytes(plainPassword));
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(plainPassword));
+               
+            return Convert.ToBase64String(hashBytes);
         }
+
     }
 }

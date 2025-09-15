@@ -12,6 +12,7 @@ namespace Donation_Website.Models
         public string Role { get; set; } = "Donor"; // Admin, Donor, Volunteer
         public string? Phone { get; set; }
         public string? Address { get; set; }
+        public string? Skill { get; set; } // For Volunteers
 
         // Navigation
         public ICollection<Cart>? Carts { get; set; }

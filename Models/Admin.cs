@@ -3,10 +3,11 @@
     public class Admin
     {
         public int AdminId { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public byte[] PasswordHash { get; set; } = Array.Empty<byte>();
-        public string Role { get; set; }
+        public string ?Name { get; set; }
+        public string ?Email { get; set; }
+        public string ?PasswordHash { get; set; }
+        public string Phone { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
         public int IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

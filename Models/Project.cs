@@ -7,7 +7,10 @@ namespace Donation_Website.Models
         public int ProjectId { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public int DonationCategoryId { get; set; }
+        public int CategoryId { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         // Navigation
         public DonationCategory? DonationCategory { get; set; }
