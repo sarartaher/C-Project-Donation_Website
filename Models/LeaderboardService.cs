@@ -8,11 +8,11 @@
         {
             var topDonors = new List<LeaderboardItem>();
             string query = @"
-                SELECT TOP 10 D.Name AS DonorName, SUM(DN.Amount) AS TotalDonation
+                SELECT TOP 10 D.DonorId, D.Name AS DonorName, SUM(DN.Amount) AS TotalDonation
                 FROM Donation DN
-                JOIN Donor D ON DN.DonorID = D.DonorID
+                JOIN Donor D ON DN.DonorId = D.DonorId
                 WHERE DN.Status = 'succeeded'
-                GROUP BY D.Name
+                GROUP BY D.DonorId, D.Name
                 ORDER BY SUM(DN.Amount) DESC;
             ";
 
