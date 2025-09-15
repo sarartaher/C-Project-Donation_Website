@@ -1,0 +1,28 @@
+﻿@page
+@model Donation_Website.Pages.ViewAlertModel
+@{
+    ViewData["Title"] = "Emergency Alerts";
+}
+<section class="container py-5">
+    <h2 class="mb-4 text-center">Emergency Alerts</h2>
+    <div class="row g-3">
+        @if (!Model.Alerts.Any())
+        {
+            <p class="text-center text-muted">No alerts at the moment.</p>
+        }
+        else
+        {
+            foreach (var a in Model.Alerts)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="alert alert-danger shadow-sm">
+                        <h5 class="alert-heading">@a.Title</h5>
+                        <p>@a.Message</p>
+                        <hr />
+                        <small class="text-muted">Posted: @a.Posted</small>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</section>

@@ -14,8 +14,12 @@
                 </div>
                 <div class="mb-4">
                     <input type="password" asp-for="NewUser.PasswordHash" class="form-control   input-box" placeholder="Enter your password">
+                
                 </div>
-                <button type="submit" class="btn rounded-4 px-5 login-btn fw-bold mt-5 ">Log In</button>
+                <div class="my-1">
+                    <a asp-page="/ResetPassword" class="my-3">Forget Password</a>
+                </div>
+                <button type="submit" class="btn rounded-4 px-5 login-btn fw-bold mt-3 ">Log In</button>
             </form>
         </div>
     </div>

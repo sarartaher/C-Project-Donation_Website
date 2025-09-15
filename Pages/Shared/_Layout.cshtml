@@ -1,8 +1,9 @@
-﻿@using Microsoft.AspNetCore.Http;
-@inject IHttpContextAccessor HttpContextAccessor;
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+    var userType = HttpContextAccessor.HttpContext.Session.GetString("UserType");
 }
 
 <!DOCTYPE html>
@@ -11,76 +12,73 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - United Charity Hub</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Donation_Website.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg px-4">
-            <a class="navbar-brand" asp-page="/Index">United Charity Hub</a>
+        <nav class="navbar navbar-expand-lg px-4" style="background-color: #9c0a0a;">
+            <a class="navbar-brand text-white" asp-page="/Index">United Charity Hub</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto align-items-sm-center ">
-                    <li class="nav-item"><a class="nav-link" asp-page="/Index" >Home</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-page="/About">About</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-page="/Donation">Donation</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-page="/Contact">Contact</a></li>
+                <ul class="navbar-nav mx-auto align-items-sm-center">
+                    <li class="nav-item"><a class="nav-link text-white" asp-page="/Index">Home</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" asp-page="/About">About</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" asp-page="/Donation">Donation</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" asp-page="/Contact">Contact</a></li>
                 </ul>
-                <div class="d-flex gap-4 align-items-center justify-content-center">
-                    <a class="btn btn-light" asp-page="cart">Cart</a>
-                    @if (HttpContextAccessor.HttpContext.Session.GetString("UserName") == null)
+                <div class="d-flex gap-2 align-items-center justify-content-center">
+                    <a class="btn btn-light" asp-page="/Cart">Cart</a>
+
+                    @if (string.IsNullOrEmpty(userName))
                     {
                         <a asp-page="/Login" class="btn btn-info">Login</a>
                         <a asp-page="/Signup" class="btn btn-outline-info">Signup</a>
                     }
                     else
                     {
-                        <div class="d-flex justify-content-center align-items-center gap-4">
-                            <span class="text-white 3xl">Hello, @HttpContextAccessor.HttpContext.Session.GetString("UserName")</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-white fw-bold">Hello, @userName</span>
 
-                            @if (User.IsInRole("Admin"))
+                            @switch (userType)
                             {
-                                <a asp-page="/Admindashboard" class="btn btn-success">Dashboard</a>
-                            }
-                            else if (User.IsInRole("Donor"))
-                            {
-                                <a asp-page="/Donordashboard" class="btn btn-primary">Dashboard</a>
-                            }
-                            else if (User.IsInRole("Volunteer"))
-                            {
-                                <a asp-page="/Volunteerdashboard" class="btn btn-info">Dashboard</a>
+                                case "Admin":
+                                    <a asp-page="/AdminDashboard" class="btn btn-success">Dashboard</a>
+                                    break;
+                                case "Donor":
+                                    <a asp-page="/DonorDashboard" class="btn btn-primary">Dashboard</a>
+                                    break;
+                                case "Volunteer":
+                                    <a asp-page="/VolunteerDashboard" class="btn btn-info">Dashboard</a>
+                                    break;
                             }
 
-                            <form method="post" asp-page="/Login">
-                                <button type="submit" class="btn btn-dark ">Logout</button>
+                            <form method="post" asp-page="/Logout">
+                                <button type="submit" class="btn btn-dark">Logout</button>
                             </form>
-                            <a asp-page="/Signup" class="btn btn-outline-info">Signup</a>
                         </div>
                     }
-
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="bg-dark text-light pt-5 py-3">
+    <footer class="bg-dark text-light pt-5 py-3 mt-5">
         <div class="container text-center text-md-start">
             <div class="row text-center text-md-start">
-
                 <!-- Section 1 -->
                 <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
                     <h5 class="text-uppercase mb-4 fw-bold text-center">Our Goal</h5>
                     <p class="text-justify">
-                        We work to create a world where no one is left behind, where the elderly are cared for, orphans are supported, and families affected by natural disasters find safety and dignity. We believe that small acts of kindness can create big changes, to serve humanity with sincerity, fairness, and love.
+                        We work to create a world where no one is left behind, supporting the elderly, orphans, and families affected by disasters. Small acts of kindness create big changes.
                     </p>
                 </div>
 
@@ -99,7 +97,6 @@
                     <p><a href="#" class="text-light text-decoration-none">Blog</a></p>
                     <p><a href="#" class="text-light text-decoration-none">FAQs</a></p>
                     <p><a href="#" class="text-light text-decoration-none">Privacy Policy</a></p>
-                    
                 </div>
 
                 <!-- Section 4 -->
@@ -110,8 +107,8 @@
                     <p><i class="bi bi-telephone-fill me-2"></i>+880 123 456 789</p>
                     <p><i class="bi bi-printer-fill me-2"></i>+880 987 654 321</p>
                 </div>
-
             </div>
+
             <hr class="my-3">
             <div class="row d-flex justify-content-center">
                 <div class="col-md-8 col-lg-8">
@@ -120,12 +117,10 @@
             </div>
         </div>
     </footer>
-            
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

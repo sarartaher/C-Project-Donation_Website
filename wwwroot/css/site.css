@@ -1,5 +1,4 @@
 :root {
-    --nav-header-color: #970747;
     --nav-text: #FFD700;
     --login-card: #002C54;
     --home-hero: linear-gradient(86deg, #C7032A, #610119);
@@ -18,9 +17,9 @@
 .text-justify{
         text-align:justify;
 }
-}
+
 nav{
-    background-color:var(--nav-header-color);
+    background-color:#9c0a0a ;
 }
 .nav-link, .navbar-brand{
     color:var(--nav-text) !important;

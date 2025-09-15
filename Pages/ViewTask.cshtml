@@ -1,0 +1,31 @@
+﻿@page
+@model Donation_Website.Pages.ViewTaskModel
+@{
+    ViewData["Title"] = "Tasks";
+}
+<section class="container py-5">
+    <h2 class="mb-4 text-center">Your Tasks</h2>
+    <div class="row g-3">
+        @if (!Model.Assignments.Any())
+        {
+            <p class="text-center text-muted">No tasks assigned yet.</p>
+        }
+        else
+        {
+            foreach (var t in Model.Assignments)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@t.WorkTitle (@t.ProjectTitle)</h5>
+                            <p class="card-text">@t.RoleTask</p>
+                            <span class="badge @(t.Status == "Completed" ? "bg-success" : "bg-warning text-dark")">@t.Status</span>
+                            <small class="d-block mt-2">Assigned: @t.AssignDate.ToShortDateString()</small>
+                            <small class="d-block">Hours: @t.Hours</small>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</section>

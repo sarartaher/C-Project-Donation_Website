@@ -25,8 +25,8 @@ namespace Donation_Website.Models
                             Name = reader["Name"].ToString()!,
                             Email = reader["Email"].ToString()!,
                             PasswordHash = reader["PasswordHash"]?.ToString() ?? "",  // read as string safely
-                            Phone = reader["Phone"]?.ToString(),
-                            Address = reader["Address"]?.ToString(),
+                            Phone = reader["Phone"]?.ToString()!,
+                            Address = reader["Address"]?.ToString()!,
                             IsActive = Convert.ToInt32(reader["IsActive"]),
                             CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                             UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedAt"])
