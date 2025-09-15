@@ -5,7 +5,7 @@
 
 
        
-            public string DonorName { get; set; }
+            public string ?DonorName { get; set; }
             public decimal TotalDonation { get; set; }
         
 
