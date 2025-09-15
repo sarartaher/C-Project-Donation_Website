@@ -71,17 +71,12 @@ Orphanage Support • Water in Africa • Gaza Relief • Old Age Home Care • 
 ---
 
 ## 🗂️ Data Model Highlights
-- **Entities**: `Admin`, `Donor`, `Volunteer`, `DonationCategory`, `Project`, `Fundraiser`, `Donation`, `Payment`, `Review`, `VolunteerAssignment`, `WorksOfOrganization`, `AuditLog`.  
+- **Entities**: `Admin`, `Donor`, `Volunteer`, `DonationCategory`, `Project`, `Fundraiser`, `Donation`, `Payment`, `Review`, `VolunteerAssignment`, `WorksOfOrganization`, `AuditLog`, `Financelog`.  
 - **Enhancements**:
   - `Project.IsActive`, `Project.Location`  
   - `Donation.IsAnonymous`  
   - `Payment.ReceiptCode` (unique)  
-  - Optional: `Donor.IsActive`, `Volunteer.IsActive`  
-- **Views**:
-  - `v_FundraiserCollected` → totals per fundraiser  
-  - `v_SegmentTotals` → admin segment dashboards  
-  - `v_SegmentTotalsBasic` → donor segment views  
-
+  - Optional: `Donor.IsActive`, `Volunteer.IsActive` 
 ---
 
 ## 🔄 End-to-End Workflow
