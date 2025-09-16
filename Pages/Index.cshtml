@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model Donation_Website.Pages.IndexModel
 @{
     ViewData["Title"] = "Home";
 }
@@ -13,14 +13,12 @@
 
             We believe that humanity is the greatest strength. We are creating a website where every person can extend a helping hand, no matter how small. Because together, small efforts can create big changes.
         </h4>
-        
+
     </div>
     <div class="hero-img col-lg-5 col-md-12 text-center mt-4 mt-lg-0">
         <img class="img-fluid rounded-4 shadow-lg" src="~/Assets/Hero.jpg" alt="Hero Image">
     </div>
 </section>
-
-
 
 <section class="p-5 text-center bg-light">
     <div class="container">
@@ -85,17 +83,12 @@
     </div>
 </section>
 
-
-
-
-
-
 <!-- Donation Categories -->
 <section class="p-5 bg-secondary bg-opacity-25">
     <h1 class="text-center pb-4 fw-bold">Events</h1>
     <div class="container text-center">
         <div class="row g-4 justify-content-center">
-
+            <!-- Events Cards (unchanged) -->
             <div class="col-md-4 col-sm-6">
                 <a asp-page="/Orphanage" class="text-decoration-none">
                     <div class="card p-4 shadow-lg h-100 event-card position-relative overflow-hidden">
@@ -167,12 +160,11 @@
                     </div>
                 </a>
             </div>
-
         </div>
     </div>
 </section>
 
-<!--Comment Section-->
+<!-- Comment Section -->
 <section class="comment-section py-5 mx-auto" style="max-width:860px;">
     <div class="container">
         <h2 class="mb-4 text-center">Comments</h2>
@@ -180,19 +172,26 @@
         <!-- Comment Form -->
         <div class="card mb-4">
             <div class="card-body">
-                <form>
+                <form method="post" asp-page-handler="AddComment">
                     <div class="mb-3">
                         <label for="commentName" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="commentName" placeholder="Your Name">
+                        <input type="text" class="form-control" id="commentName" name="CommentName" placeholder="Your Name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="commentEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="commentEmail" placeholder="Your Email">
+                        <label for="commentRating" class="form-label">Rating</label>
+                        <select class="form-control" id="commentRating" name="Rating" required>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="commentContent" class="form-label">Comment</label>
-                        <textarea class="form-control" id="commentContent" rows="3" placeholder="Your Comment"></textarea>
+                        <textarea class="form-control" id="commentContent" name="CommentContent" rows="3" placeholder="Your Comment" required></textarea>
                     </div>
+                    <input type="hidden" name="ProjectId" value="1" />
                     <button type="submit" class="btn btn-primary">Post Comment</button>
                 </form>
             </div>
@@ -200,49 +199,31 @@
 
         <!-- Comments List -->
         <div class="comments-list">
-            <!-- Comment 1 -->
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="d-flex mb-3">
-                        <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="User Avatar">
-                        <div>
-                            <h5 class="card-title mb-0">John Doe</h5>
-                            <small class="text-muted">Posted on July 17, 2024</small>
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title mb-0">@comment.User?.Name</h5>
+                            <small class="text-muted">@comment.Date.ToString("MMMM dd, yyyy")</small>
                         </div>
-                    </div>
-                    <p class="card-text">This is a great article! I learned a lot from it. Keep up the good work!</p>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-sm btn-outline-primary me-2">
-                            <i class="bi bi-hand-thumbs-up"></i> Like
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-reply"></i> Reply
-                        </button>
+                        <div class="mb-2">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= comment.Rating)
+                                {
+                                    <span class="text-warning">★</span>
+                                }
+                                else
+                                {
+                                    <span class="text-secondary">☆</span>
+                                }
+                            }
+                        </div>
+                        <p class="card-text">@comment.Comment</p>
                     </div>
                 </div>
-            </div>
-
-            <!-- Comment 2 -->
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="d-flex mb-3">
-                        <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="User Avatar">
-                        <div>
-                            <h5 class="card-title mb-0">Jane Smith</h5>
-                            <small class="text-muted">Posted on July 16, 2024</small>
-                        </div>
-                    </div>
-                    <p class="card-text">I have a question about one of the points you made. Could you elaborate more on...</p>
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-sm btn-outline-primary me-2">
-                            <i class="bi bi-hand-thumbs-up"></i> Like
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-reply"></i> Reply
-                        </button>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </section>
