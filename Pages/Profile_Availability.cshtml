@@ -1,0 +1,70 @@
+﻿@page
+@model Donation_Website.Pages.Profile_AvailabilityModel
+@{
+    ViewData["Title"] = "Profile & Availability";
+}
+
+<section class="container py-5">
+    <h2 class="mb-4 text-center">Profile & Availability</h2>
+
+    @if (TempData["msg"] != null)
+    {
+        <div class="alert alert-success">@TempData["msg"]</div>
+    }
+
+    <!-- ================= Existing Data ================= -->
+    <div class="card mb-5 shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            Existing Data
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> @Model.VolunteerInfo.Name</p>
+            <p><strong>Email:</strong> @Model.VolunteerInfo.Email</p>
+            <p><strong>Phone:</strong> @Model.VolunteerInfo.Phone</p>
+            <p><strong>Skills:</strong> @Model.VolunteerInfo.Skill</p>
+            <p><strong>Availability:</strong> @Model.VolunteerInfo.Availability</p>
+        </div>
+    </div>
+
+    <!-- ================= Update Data Form ================= -->
+    <form method="post" class="col-md-6 mx-auto">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                Update Your Data
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label>Name</label>
+                    <input class="form-control" asp-for="VolunteerInfo.Name" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Email</label>
+                    <input class="form-control" asp-for="VolunteerInfo.Email" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Phone</label>
+                    <input class="form-control" asp-for="VolunteerInfo.Phone" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Skills</label>
+                    <input class="form-control" asp-for="VolunteerInfo.Skill" />
+                </div>
+
+                <div class="mb-3">
+                    <label>Availability</label>
+                    <select class="form-select" asp-for="VolunteerInfo.Availability">
+                        <option value="Full-Time" selected="@Model.VolunteerInfo.Availability == " Full-Time"">Full-Time</option>
+                        <option value="Part-Time" selected="@Model.VolunteerInfo.Availability == " Part-Time"">Part-Time</option>
+                        <option value="Weekends" selected="@Model.VolunteerInfo.Availability == " Weekends"">Weekends</option>
+                        <option value="On Call" selected="@Model.VolunteerInfo.Availability == " On Call"">On Call</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success mt-3">Update Data</button>
+            </div>
+        </div>
+    </form>
+</section>
