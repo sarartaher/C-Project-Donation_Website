@@ -2,7 +2,7 @@
 
 namespace Donation_Website.Models
 {
-    public class Fundraiser
+    public class FundraiserViewModel
     {
         public int FundraiserId { get; set; }
         public string Title { get; set; } = string.Empty;

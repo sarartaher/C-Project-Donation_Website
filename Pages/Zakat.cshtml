@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Zakat";
 }
+
 @* Hero Section *@
 <section id="hero-zakat" class="container-fluid py-5">
     <div class="row align-items-center">
@@ -15,29 +16,65 @@
         </div>
     </div>
 </section>
+
 @* Zakat-calculator *@
 <section id="zakat-calc" class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="zakat-card p-4 rounded-3 text-center text-white">
-                <p class="fs-5 fw-bold mb-4">Your zakat is calculated by one year cycle with 2.5% total valuation</p>
+            <div class="zakat-card p-4 rounded-3 text-center text-white" style="background-color:#198754;">
+                <p class="fs-5 fw-bold mb-4">
+                    Your zakat is calculated by one year cycle with 2.5% total valuation
+                </p>
+
                 <div class="row g-4 justify-content-center mb-4">
                     <div class="col-lg-5">
                         <label for="money" class="form-label fs-6 fw-bold">Your money:</label>
                         <input type="number" class="form-control" id="money" placeholder="Enter amount">
                     </div>
                     <div class="col-lg-5">
-                        <label for="property" class="form-label fs-6 fw-bold">Your property valuation :</label>
+                        <label for="property" class="form-label fs-6 fw-bold">Your property valuation:</label>
                         <input type="number" class="form-control" id="property" placeholder="Enter amount">
                     </div>
                 </div>
+
                 <div class="row mt-4 justify-content-center">
                     <div class="col-lg-6">
+                        <button class="btn btn-light btn-lg w-100 fw-bold" id="calculateBtn">Calculate Zakat</button>
+                    </div>
+                </div>
+
+                <div class="row mt-4 justify-content-center d-none" id="zakatResultRow">
+                    <div class="col-lg-6">
                         <label for="zakat-amount" class="form-label fs-6 fw-bold">Your Zakat:</label>
-                        <input type="text" class="form-control form-control-lg zakat-result-box" id="zakat-amount" readonly>
+                        <input type="text" class="form-control form-control-lg zakat-result-box text-center fw-bold"
+                               id="zakat-amount" readonly>
+                    </div>
+                </div>
+
+                <div class="row mt-4 justify-content-center d-none" id="donateBtnRow">
+                    <div class="col-lg-6">
+                        <a asp-page="/cart" class="btn btn-warning btn-lg w-100 fw-bold">Now Donate</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        document.getElementById("calculateBtn").addEventListener("click", function () {
+            let money = parseFloat(document.getElementById("money").value) || 0;
+            let property = parseFloat(document.getElementById("property").value) || 0;
+
+            let total = money + property;
+            let zakat = (total * 2.5) / 100;
+
+            document.getElementById("zakat-amount").value = zakat.toFixed(2);
+
+            // Show result and donate button
+            document.getElementById("zakatResultRow").classList.remove("d-none");
+            document.getElementById("donateBtnRow").classList.remove("d-none");
+        });
+    </script>
+}

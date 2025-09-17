@@ -1,0 +1,89 @@
+﻿@page
+@model Donation_Website.Pages.FAQsModel
+@{
+    ViewData["Title"] = "Frequently Asked Questions (FAQ)";
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <div class="p-4 legal-hero">
+            <h1 class="mb-1">Frequently Asked Questions</h1>
+            <p class="mb-0 text-muted">Last updated: <strong> </strong></p>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Accordion -->
+<div class="accordion" id="faqAccordion">
+
+    <!-- Q1 -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="faqHeading1">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
+                How can I make a donation?
+            </button>
+        </h2>
+        <div id="faqCollapse1" class="accordion-collapse collapse show" aria-labelledby="faqHeading1" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                You can make a donation by selecting a cause from our <strong>Donation Page</strong>, adding it to your cart, and completing the checkout process securely.
+            </div>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="faqHeading2">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
+                Can I track how my donation is used?
+            </button>
+        </h2>
+        <div id="faqCollapse2" class="accordion-collapse collapse" aria-labelledby="faqHeading2" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                Yes! We provide regular updates and receipts so you can see the direct impact of your contributions.
+            </div>
+        </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="faqHeading3">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
+                Is my donation tax-deductible?
+            </button>
+        </h2>
+        <div id="faqCollapse3" class="accordion-collapse collapse" aria-labelledby="faqHeading3" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                Yes, all donations are tax-deductible as per local regulations. You will receive an official receipt after every successful donation.
+            </div>
+        </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="faqHeading4">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
+                What payment methods are accepted?
+            </button>
+        </h2>
+        <div id="faqCollapse4" class="accordion-collapse collapse" aria-labelledby="faqHeading4" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                We accept credit/debit cards, bank transfers, and mobile payment systems like <strong>bKash, Rocket, Nagad</strong>, as well as international payment gateways.
+            </div>
+        </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="faqHeading5">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse5" aria-expanded="false" aria-controls="faqCollapse5">
+                Can I donate anonymously?
+            </button>
+        </h2>
+        <div id="faqCollapse5" class="accordion-collapse collapse" aria-labelledby="faqHeading5" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+                Yes, we respect your privacy. You can choose to donate anonymously during the checkout process.
+            </div>
+        </div>
+    </div>
+
+</div>

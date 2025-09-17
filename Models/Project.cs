@@ -14,7 +14,7 @@ namespace Donation_Website.Models
 
         // Navigation
         public DonationCategory? DonationCategory { get; set; }
-        public ICollection<Fundraiser>? Fundraisers { get; set; }
+        public ICollection<FundraiserViewModel>? Fundraisers { get; set; }
         public ICollection<Review>? Reviews { get; set; }
         public ICollection<WorksOfOrganization>? Works { get; set; }
     }

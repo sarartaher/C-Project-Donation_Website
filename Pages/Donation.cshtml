@@ -35,18 +35,12 @@
                 <label for="eventSelect" class="form-label">Select Event</label>
                 <select class="form-select" id="eventSelect" required>
                     <option value="" disabled selected>Choose an event...</option>
-                    <option>Zakat</option>
-                    <option>Gaza</option>
-                    <option>Orphan Support</option>
-                    <option>Tree Plantation</option>
-                    <option>Eid & Ramadan</option>
-                    <option>Natural Disaster</option>
-                    <option>Home Repair</option>
-                    <option>Water Aid</option>
-                    <option>Winter Support</option>
-                    <option>Healthcare Aid</option>
-                    <option>Education Fund</option>
+                    @foreach (var f in Model.Fundraisers)
+                    {
+                        <option value="@f.FundraiserId">@f.Title</option>
+                    }
                 </select>
+
             </div>
 
             <!-- Secret Name -->

@@ -9,6 +9,6 @@
 
         // Navigation
         public Cart? Cart { get; set; }
-        public Fundraiser? Fundraiser { get; set; }
+        public FundraiserViewModel? Fundraiser { get; set; }
     }
 }

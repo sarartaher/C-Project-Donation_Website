@@ -1,12 +1,60 @@
 ﻿@page
 @model Donation_Website.Pages.VerifyModel
 @{
+    ViewData["Title"] = "Volunteer Verification";
 }
-<Section class="container mt-4">
-    <h2>Volunteer Verification</h2>
-    <p>Verify and track volunteer activities.</p>
-    <ul class="list-group">
-        <li class="list-group-item">Volunteer: John Doe, Status: Pending Verification</li>
-        <li class="list-group-item">Volunteer: Jane Smith, Status: Verified</li>
-    </ul>
-</Section>
+
+<section class="container mt-4">
+    <h2 class="mb-3">Volunteer Verification</h2>
+    <p class="mb-4">Verify and track volunteer activities.</p>
+
+    <!-- Search Box -->
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by Name" onkeyup="filterTable()">
+    </div>
+
+    <table class="table table-bordered table-hover text-center" id="volunteerTable">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Skill</th>
+                <th>Availability</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var v in Model.Volunteer)
+            {
+                <tr>
+                    <td>@v.Name</td>
+                    <td>@v.Email</td>
+                    <td>@v.Phone</td>
+                    <td>@v.Address</td>
+                    <td>@v.Skill</td>
+                    <td>@v.Availability</td>
+                    <td class="fw-bold @v.StatusClass">@v.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+<script>
+    function filterTable() {
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("volunteerTable");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                var txtValue = td.textContent || td.innerText;
+                tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    }
+</script>

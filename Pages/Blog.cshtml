@@ -1,0 +1,153 @@
+﻿@page
+@model Donation_Website.Pages.BlogModel
+@{
+    ViewData["Title"] = "Our Blog";
+    var lastUpdated = "September 16, 2025"; // update as needed
+}
+
+<!-- HERO SECTION -->
+<div class="row mb-5">
+    <div class="col">
+        <section class="p-5 text-center text-white rounded shadow-sm" style="background: linear-gradient(135deg, #001f3f, #003366);">
+            <h1 class="display-4 fw-bold mb-3">OUR BLOG</h1>
+            <p class="lead mb-0">Stories, updates, and insights from our donation community</p>
+            <p class="mt-2 small text-light">Last updated: <strong>@lastUpdated</strong></p>
+        </section>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Blog Posts -->
+    <div class="col-lg-8">
+        <!-- Featured Post -->
+        <div class="card mb-4 shadow-sm">
+            <img src="https://ofno.org/wp-content/uploads/2023/09/BlogPost__1.jpg" class="card-img-top" alt="featured">
+            <div class="card-body">
+                <h3 class="card-title">How Your Donations Change Lives</h3>
+                <p class="card-text text-muted">Discover real stories of impact, transparency, and hope from the communities we serve.</p>
+                <a href="#" class="btn btn-primary">Read More</a>
+            </div>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://lrbt.org.pk/wp-content/uploads/2024/03/Personal-Stories-Transformation-img1.jpg" class="card-img-top" alt="post">
+                    <div class="card-body">
+                        <h5 class="card-title">The Power of Zakat</h5>
+                        <p class="card-text small text-muted">How Zakat uplifts families and builds sustainable futures.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://i.pinimg.com/736x/f4/b0/85/f4b0855ba9187abc4066652a7f1647b7.jpg" class="card-img-top" alt="post">
+                    <div class="card-body">
+                        <h5 class="card-title">Behind the Scenes: Donation Transparency</h5>
+                        <p class="card-text small text-muted">How we ensure your support reaches those who need it most.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://media.istockphoto.com/id/463406923/photo/all-for-one-hands-stacked-in-unity-and-support.jpg?s=612x612&w=0&k=20&c=n2zPFyxIuirdcPQLNM1J4XjRXW_cbnEQMMkAmcEKhIM=" class="card-img-top" alt="post">
+                    <div class="card-body">
+                        <h5 class="card-title">Community Spotlight</h5>
+                        <p class="card-text small text-muted">Meet the people and projects making a difference with your help.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://www.unicef.org/jordan/sites/unicef.org.jordan/files/styles/media_large_image/public/J1_0.png.webp?itok=q8Keiz58" class="card-img-top" alt="post">
+                    <div class="card-body">
+                        <h5 class="card-title">Volunteer Stories</h5>
+                        <p class="card-text small text-muted">Hear directly from the volunteers who dedicate time to support our mission.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination pagination-sm">
+                <li class="page-item disabled"><a class="page-link">Previous</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="sticky-top" style="top: 90px;">
+            <!-- About -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold">About Our Blog</h6>
+                    <p class="small text-muted">
+                        United Charity Hub is a non-profit organization dedicated to bringing hope, support, and positive change to communities in need. Our mission is simple: to connect generous hearts with causes that matter.
+
+                        Every donation you make helps us:
+
+                        Provide food, clothing, and shelter for vulnerable families.
+
+                        Support education programs for underprivileged children.
+
+                        Offer healthcare assistance to those who cannot afford it.
+
+                        Fund community development projects that create lasting impact.
+
+                        ✨ At United Charity Hub, we believe that together, small acts of kindness can create big changes. Your contribution, no matter the size, brings us one step closer to building a world where compassion, equality, and opportunity thrive for everyone.
+
+                        🙏 Join us today in spreading hope. Donate now and be a part of the change.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold">Categories</h6>
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        <a href="#" class="btn btn-sm btn-outline-secondary">Donations</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary">Zakat</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary">Volunteers</a>
+                        <a href="#" class="btn btn-sm btn-outline-secondary">Transparency</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Posts -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h6 class="fw-bold">Recent Posts</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="py-2 border-bottom">
+                            <a href="#" class="text-decoration-none">The Power of Zakat</a>
+                            <div class="small text-muted">Sep 2025</div>
+                        </li>
+                        <li class="py-2 border-bottom">
+                            <a href="#" class="text-decoration-none">Behind the Scenes</a>
+                            <div class="small text-muted">Aug 2025</div>
+                        </li>
+                        <li class="py-2">
+                            <a href="#" class="text-decoration-none">Volunteer Stories</a>
+                            <div class="small text-muted">Jul 2025</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

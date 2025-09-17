@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Cart";
 }
+
 <section class="h-100">
     <div class="container py-5">
         <div class="row d-flex justify-content-center my-4">
@@ -12,34 +13,42 @@
                 <div class="card mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Your Donations</h5>
-                        <button class="btn btn-sm btn-primary" id="addDonationBtn">
+                        <a class="btn btn-sm btn-primary" asp-page="/Donation">
                             <i class="fas fa-plus"></i> Add More Donation
-                        </button>
+                        </a>
                     </div>
                     <div class="card-body" id="donationList">
 
-                        <!-- Sample Donation Item -->
-                        <div class="row mb-4 donation-item">
-                            <div class="col-lg-3 col-md-12 mb-3">
-                                <img src="images/zakat.jpg" class="w-100 rounded" alt="Donation Event">
-                            </div>
+                        @if (Model.Donations.Count > 0)
+                        {
+                            @foreach (var donation in Model.Donations)
+                            {
+                                <div class="row mb-4 donation-item">
+                                    <div class="col-lg-3 col-md-12 mb-3">
+                                        <img src="images/default.jpg" class="w-100 rounded" alt="Donation Event">
+                                    </div>
 
-                            <div class="col-lg-9 col-md-12 mb-3">
-                                <p><strong>Zakat</strong></p>
-                                <p>Secret Name: Anonymous</p>
-                                <p>Amount: $50</p>
-                                <p>Date: <span class="text-muted">2025-09-06 10:15 PM</span></p>
+                                    <div class="col-lg-9 col-md-12 mb-3">
+                                        <p><strong>@donation.EventName</strong></p>
+                                        <p>Secret Name: Anonymous</p>
+                                        <p>Amount: $@donation.Amount</p>
+                                        <p>Date: <span class="text-muted">@donation.Date.ToString("yyyy-MM-dd hh:mm tt")</span></p>
 
-                                <!-- Actions -->
-                                <button class="btn btn-sm btn-success me-2 selectBtn">
-                                    <i class="fas fa-check"></i> Select
-                                </button>
-                                <button class="btn btn-sm btn-danger deleteBtn">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
-                            </div>
-                        </div>
-                        <!-- End Donation Item -->
+                                        <!-- Actions -->
+                                        <button class="btn btn-sm btn-success me-2 selectBtn">
+                                            <i class="fas fa-check"></i> Select
+                                        </button>
+                                        <button class="btn btn-sm btn-danger deleteBtn">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-center text-muted">No donations found. Add some donations first.</p>
+                        }
 
                     </div>
                 </div>
@@ -84,7 +93,6 @@
                         </div>
 
                         <!-- Donation Done -->
-                        <!-- Donation Done -->
                         <button class="btn btn-success w-100 mb-2" id="donationDoneBtn">
                             Donation Done
                         </button>
@@ -101,92 +109,3 @@
         </div>
     </div>
 </section>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-<script>
-    // Update totals
-    function updateTotal() {
-      let subtotal = 0;
-      document.querySelectorAll("#selectedList li").forEach(item => {
-        subtotal += parseFloat(item.getAttribute("data-amount"));
-      });
-      document.getElementById("subTotal").innerText = subtotal.toFixed(2);
-
-      // Example: add 2% processing fee
-      let total = subtotal * 1.02;
-      document.getElementById("totalAmount").innerText = total.toFixed(2);
-    }
-
-    // Select button → move to right side
-    document.addEventListener("click", function(e) {
-      if (e.target.closest(".selectBtn")) {
-        const donationItem = e.target.closest(".donation-item");
-        const eventName = donationItem.querySelector("strong").innerText;
-        const amountText = donationItem.querySelector("p:nth-of-type(3)").innerText;
-        const amount = parseFloat(amountText.replace("Amount: $", "")) || 0;
-
-        const li = document.createElement("li");
-        li.className = "list-group-item d-flex justify-content-between align-items-center";
-        li.setAttribute("data-amount", amount);
-        li.innerHTML = `
-          <div>
-            <input type="checkbox" checked> ${eventName} - $${amount}
-          </div>
-          <button class="btn btn-sm btn-danger removeSelected">Delete</button>
-        `;
-        document.getElementById("selectedList").appendChild(li);
-
-        updateTotal();
-      }
-
-      // Delete from left
-      if (e.target.closest(".deleteBtn")) {
-        e.target.closest(".donation-item").remove();
-      }
-
-      // Delete from right
-      if (e.target.closest(".removeSelected")) {
-        e.target.closest("li").remove();
-        updateTotal();
-      }
-    });
-
-    document.getElementById("addDonationBtn").addEventListener("click", function() {
-      const donationList = document.getElementById("donationList");
-
-      
-      const now = new Date();
-      const dateStr = now.toLocaleString();
-
-      const newDonation = document.createElement("div");
-      newDonation.className = "row mb-4 donation-item";
-      newDonation.innerHTML = `
-        <div class="col-lg-3 col-md-12 mb-3">
-          <img src="images/default.jpg" class="w-100 rounded" alt="Donation Event">
-        </div>
-        <div class="col-lg-9 col-md-12 mb-3">
-          <p><strong>Extra Donation</strong></p>
-          <p>Secret Name: Supporter</p>
-          <p>Amount: $30</p>
-          <p>Date: <span class="text-muted">${dateStr}</span></p>
-          <button class="btn btn-sm btn-success me-2 selectBtn"><i class="fas fa-check"></i> Select</button>
-          <button class="btn btn-sm btn-danger deleteBtn"><i class="fas fa-trash"></i> Delete</button>
-        </div>
-      `;
-      donationList.appendChild(newDonation);
-    });
-
-    
-    document.getElementById("donationDoneBtn").addEventListener("click", function() {
-      const method = document.querySelector("input[name='paymentMethod']:checked").id;
-      if (method === "mobilePay") {
-        alert("Redirecting to Mobile Payment (bKash/Nagad/PayPal)...");
-        window.location.href = "https://example.com/mobile-payment";
-      } else {
-        alert("Redirecting to Card Payment Gateway...");
-        window.location.href = "https://example.com/card-payment";
-      }
-    });
-</script>
-

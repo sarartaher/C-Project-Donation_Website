@@ -1,8 +1,125 @@
 ﻿@page
-@model PrivacyModel
+@model Donation_Website.Pages.PrivacyModel
 @{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Privacy & Policy / Terms & Conditions";
+    var lastUpdated = "September 13, 2025"; // update as needed
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="row mb-4">
+    <div class="col">
+        <div class="p-4 legal-hero">
+            <h1 class="mb-1">Privacy & Policy — Terms & Conditions</h1>
+            <p class="mb-0 text-muted">Last updated: <strong>@lastUpdated</strong></p>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Privacy & Policy -->
+<section id="privacy-section" class="mb-5">
+    <h2>Privacy & Policy</h2>
+    <p class="text-muted">We respect your privacy. This section explains what information we collect and how we use it.</p>
+
+    <div class="accordion" id="privacyAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="pa1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pCollapse1" aria-expanded="true" aria-controls="pCollapse1">
+                    Introduction
+                </button>
+            </h2>
+            <div id="pCollapse1" class="accordion-collapse collapse show" data-bs-parent="#privacyAccordion">
+                <div class="accordion-body">
+                    At <strong>United Charity Hub</strong> (the “Website”), we respect your privacy and are committed to protecting the personal and financial information you share with us.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="pa2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pCollapse2" aria-expanded="false" aria-controls="pCollapse2">
+                    Information We Collect
+                </button>
+            </h2>
+            <div id="pCollapse2" class="accordion-collapse collapse" data-bs-parent="#privacyAccordion">
+                <div class="accordion-body">
+                    <ul>
+                        <li><strong>Personal Information:</strong> name, email, phone, address</li>
+                        <li><strong>Financial Data:</strong> donation history, payment details</li>
+                        <li><strong>System Data:</strong> IP address, cookies, device info</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="pa3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pCollapse3" aria-expanded="false" aria-controls="pCollapse3">
+                    How We Use Your Information
+                </button>
+            </h2>
+            <div id="pCollapse3" class="accordion-collapse collapse" data-bs-parent="#privacyAccordion">
+                <div class="accordion-body">
+                    <ul>
+                        <li>Process donations and maintain accurate <strong>financial statements</strong></li>
+                        <li>Ensure safe <strong>money management</strong></li>
+                        <li>Send updates and receipts</li>
+                        <li>Improve our services</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Terms & Conditions -->
+<section id="terms-section">
+    <h2>Terms & Conditions</h2>
+    <p class="text-muted">By using this Website you agree to the terms below.</p>
+
+    <div class="accordion" id="termsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="ta1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#tCollapse1" aria-expanded="true" aria-controls="tCollapse1">
+                    1. Use of Website
+                </button>
+            </h2>
+            <div id="tCollapse1" class="accordion-collapse collapse show" data-bs-parent="#termsAccordion">
+                <div class="accordion-body">
+                    You agree to use this Website lawfully and not for fraudulent activities.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="ta2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#tCollapse2" aria-expanded="false" aria-controls="tCollapse2">
+                    2. Donations & Payments
+                </button>
+            </h2>
+            <div id="tCollapse2" class="accordion-collapse collapse" data-bs-parent="#termsAccordion">
+                <div class="accordion-body">
+                    All donations are voluntary and non-refundable. Payments are processed securely and your financial data is protected.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="ta3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#tCollapse3" aria-expanded="false" aria-controls="tCollapse3">
+                    3. Financial Statements & Money Management
+                </button>
+            </h2>
+            <div id="tCollapse3" class="accordion-collapse collapse" data-bs-parent="#termsAccordion">
+                <div class="accordion-body">
+                    Donations are managed with strict <strong>money management</strong> practices. Summarized <strong>financial statements</strong> may be shared for transparency.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+</div>
+
+
