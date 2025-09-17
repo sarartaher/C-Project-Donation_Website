@@ -4,77 +4,48 @@
     ViewData["Title"] = "Zakat";
 }
 
-@* Hero Section *@
-<section id="hero-zakat" class="container-fluid py-5">
-    <div class="row align-items-center">
-        <div class="col-md-6 text-white text-center text-md-start">
-            <h1 class="display-1 fw-bold text-center">ZAKAT</h1>
-        </div>
-        <div class="col-md-6 mt-4 mt-md-0">
-            <div class="bg-light p-4 rounded" style="min-height: 200px;">
-            </div>
-        </div>
-    </div>
-</section>
-
-@* Zakat-calculator *@
 <section id="zakat-calc" class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="zakat-card p-4 rounded-3 text-center text-white" style="background-color:#198754;">
-                <p class="fs-5 fw-bold mb-4">
-                    Your zakat is calculated by one year cycle with 2.5% total valuation
-                </p>
+                <form method="post">
+                    <p class="fs-5 fw-bold mb-4">
+                        Your zakat is calculated by one year cycle with 2.5% total valuation
+                    </p>
 
-                <div class="row g-4 justify-content-center mb-4">
-                    <div class="col-lg-5">
-                        <label for="money" class="form-label fs-6 fw-bold">Your money:</label>
-                        <input type="number" class="form-control" id="money" placeholder="Enter amount">
+                    <div class="row g-4 justify-content-center mb-4">
+                        <div class="col-lg-5">
+                            <label asp-for="Money" class="form-label fs-6 fw-bold"></label>
+                            <input asp-for="Money" class="form-control" placeholder="Enter amount" />
+                            <span asp-validation-for="Money" class="text-warning"></span>
+                        </div>
+                        <div class="col-lg-5">
+                            <label asp-for="Property" class="form-label fs-6 fw-bold"></label>
+                            <input asp-for="Property" class="form-control" placeholder="Enter amount" />
+                            <span asp-validation-for="Property" class="text-warning"></span>
+                        </div>
                     </div>
-                    <div class="col-lg-5">
-                        <label for="property" class="form-label fs-6 fw-bold">Your property valuation:</label>
-                        <input type="number" class="form-control" id="property" placeholder="Enter amount">
-                    </div>
-                </div>
 
-                <div class="row mt-4 justify-content-center">
-                    <div class="col-lg-6">
-                        <button class="btn btn-light btn-lg w-100 fw-bold" id="calculateBtn">Calculate Zakat</button>
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-lg-6">
+                            <button type="submit" class="btn btn-light btn-lg w-100 fw-bold">Calculate & Donate</button>
+                        </div>
                     </div>
-                </div>
+                </form>
 
-                <div class="row mt-4 justify-content-center d-none" id="zakatResultRow">
-                    <div class="col-lg-6">
-                        <label for="zakat-amount" class="form-label fs-6 fw-bold">Your Zakat:</label>
-                        <input type="text" class="form-control form-control-lg zakat-result-box text-center fw-bold"
-                               id="zakat-amount" readonly>
-                    </div>
-                </div>
+                @if (Model.ZakatAmount > 0)
+                {
+                    <div class="row mt-4 justify-content-center">
+                        <div class="col-lg-6">
+                            <label class="form-label fs-6 fw-bold">Your Zakat:</label>
+                            <input type="text" class="form-control form-control-lg text-center fw-bold"
+                                   value="@Model.ZakatAmount.ToString("0.00")" readonly />
 
-                <div class="row mt-4 justify-content-center d-none" id="donateBtnRow">
-                    <div class="col-lg-6">
-                        <a asp-page="/cart" class="btn btn-warning btn-lg w-100 fw-bold">Now Donate</a>
+                            <a asp-page="/cart" class="btn btn-warning btn-lg w-100 fw-bold mt-3">Now Donate</a>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
         </div>
     </div>
 </section>
-
-@section Scripts {
-    <script>
-        document.getElementById("calculateBtn").addEventListener("click", function () {
-            let money = parseFloat(document.getElementById("money").value) || 0;
-            let property = parseFloat(document.getElementById("property").value) || 0;
-
-            let total = money + property;
-            let zakat = (total * 2.5) / 100;
-
-            document.getElementById("zakat-amount").value = zakat.toFixed(2);
-
-            // Show result and donate button
-            document.getElementById("zakatResultRow").classList.remove("d-none");
-            document.getElementById("donateBtnRow").classList.remove("d-none");
-        });
-    </script>
-}
