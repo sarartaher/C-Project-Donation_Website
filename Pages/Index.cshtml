@@ -4,7 +4,6 @@
     ViewData["Title"] = "Home";
 }
 
-<!-- Hero Section -->
 <section class="d-flex flex-wrap justify-content-between align-items-center p-5 text-white hero-home gap-4">
     <div class="hero-text col-lg-6 col-md-12 px-3">
         <h1 class="text-wrap title">Helping Hands are better than Praying lips</h1>
@@ -45,7 +44,6 @@
     <div class="container">
         <h2 class="mb-4 fw-bold">Top Donors</h2>
 
-        <!-- Floating coins container -->
         <div class="floating-coins">
             <span class="coin">💰</span>
             <span class="coin">🪙</span>
@@ -83,12 +81,10 @@
     </div>
 </section>
 
-<!-- Donation Categories -->
 <section class="p-5 bg-secondary bg-opacity-25">
     <h1 class="text-center pb-4 fw-bold">Events</h1>
     <div class="container text-center">
         <div class="row g-4 justify-content-center">
-            <!-- Events Cards (unchanged) -->
             <div class="col-md-4 col-sm-6">
                 <a asp-page="/Orphanage" class="text-decoration-none">
                     <div class="card p-4 shadow-lg h-100 event-card position-relative overflow-hidden">
@@ -164,18 +160,16 @@
     </div>
 </section>
 
-<!-- Comment Section -->
 <section class="comment-section py-5 mx-auto" style="max-width:860px;">
     <div class="container">
         <h2 class="mb-4 text-center">Comments</h2>
 
-        <!-- Comment Form -->
         <div class="card mb-4">
             <div class="card-body">
                 <form method="post" asp-page-handler="AddComment">
                     <div class="mb-3">
                         <label for="commentName" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="commentName" name="CommentName" placeholder="Your Name" required>
+                        <input type="text" class="form-control" id="commentName" name="CommentName" placeholder="Your Name">
                     </div>
                     <div class="mb-3">
                         <label for="commentRating" class="form-label">Rating</label>
@@ -197,7 +191,6 @@
             </div>
         </div>
 
-        <!-- Comments List -->
         <div class="comments-list">
             @foreach (var comment in Model.Comments)
             {
@@ -230,5 +223,5 @@
 <script>
     setInterval(function(){
         location.reload();
-    }, 30000); // refresh every 30 seconds
+    }, 120000); // refresh every 20 minutes
 </script>
