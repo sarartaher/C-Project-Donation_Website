@@ -38,7 +38,7 @@
                     <option value="" disabled selected>Choose an event...</option>
                     @foreach (var f in Model.Fundraisers)
                     {
-                        <option value="@f.FundraiserId">@f.Title</option>
+                        <option value="@f.FundraiserId" selected="@(f.FundraiserId == Model.SelectedFundraiserId)">@f.Title</option>
                     }
                 </select>
             </div>
@@ -52,11 +52,11 @@
             <!-- Donation Amount -->
             <div class="mb-3">
                 <label for="amount" class="form-label">Donation Amount ($)</label>
-                <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount" required>
+                <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount" value="@Model.PrefilledAmount.ToString("0.00")" required>
             </div>
 
             <!-- Confirm Button -->
-            <button type="submit" asp-page="/cart" class="btn btn-success w-100">Confirm Donation</button>
+            <button type="submit" class="btn btn-success w-100">Confirm Donation</button>
         </form>
     </div>
 </div>

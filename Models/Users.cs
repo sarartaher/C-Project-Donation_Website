@@ -27,7 +27,7 @@ namespace Donation_Website.Models
                             PasswordHash = reader["PasswordHash"]?.ToString() ?? "",  // read as string safely
                             Phone = reader["Phone"]?.ToString()!,
                             Address = reader["Address"]?.ToString()!,
-                            IsActive = Convert.ToInt32(reader["IsActive"]),
+                            IsActive = Convert.ToBoolean(reader["IsActive"]),
                             CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                             UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedAt"])
                         };
@@ -86,7 +86,7 @@ namespace Donation_Website.Models
                             Availability = reader["Availability"].ToString(),
                             CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                             UpdatedAt = reader["UpdatedAt"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedAt"]),
-                            IsActive = Convert.ToInt32(reader["IsActive"])
+                            IsActive = Convert.ToBoolean(reader["IsActive"])
                         };
                         return (volunteer, "Volunteer");
                     }
