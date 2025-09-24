@@ -1,8 +1,11 @@
 ﻿@page
 @model Donation_Website.Pages.EidModel
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Eid / Ramadan";
 }
+
 <section id="eid-ramadan-hero" class="container-fluid d-flex align-items-center justify-content-center text-center text-white py-5">
     <div class="hero-overlay"></div>
     <div class="container p-5" style="position: relative; z-index: 2;">
@@ -10,7 +13,7 @@
         <p class="fs-5 mb-5">
             This blessed month, your generosity can bring immense joy. Donate your Zakat and Sadaqah to help provide food, shelter, and a reason to smile for families in need this Eid.
         </p>
-        <a asp-page="/Donation" class="btn btn-light btn-lg rounded-pill px-4 py-2 fw-bold">Donate Now</a>
+        <a asp-page="/Donation" asp-route-fundraiserId="4" class="btn btn-light btn-lg rounded-pill px-4 py-2 fw-bold">Donate Now</a>
     </div>
 </section>
 
@@ -23,60 +26,56 @@
     </div>
     <div class="row g-4">
         <div class="col-md-6 col-lg-4">
-
             <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                <div class="">
-                    <img src="~/Assets/Zakat.png" class="card-img" alt="Alternate Text" />
+                <div>
+                    <img src="~/Assets/Zakat.png" class="card-img" alt="Zakat Donation" />
                 </div>
                 <div class="card-body">
-                <i class="fas fa-hand-holding-usd fa-3x mb-3 text-success"></i>
-                <h5 class="fw-bold card-title">Zakat</h5>
-                <p class="card-text text-muted ">
-                    Fulfill your religious obligation by giving Zakat. Your donation will be distributed to those most in need, purifying your wealth and serving as an act of worship.
-                </p>
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm p-4 text-center">
-                <div class="">
-                    <img src="~/Assets/Sadaqa.png" class="card-img" alt="Alternate Text" />
-                </div>
-                <div class="card-body">
-
-                <i class="fas fa-heart fa-3x mb-3 text-danger"></i>
-                <h5 class="fw-bold card-title">Sadaqah</h5>
-                <p class="card-text text-muted">
-                    Give voluntary charity to earn immense blessings. Sadaqah can be given at any time and for any amount, offering continuous rewards for you.
-                </p>
+                    <i class="fas fa-hand-holding-usd fa-3x mb-3 text-success"></i>
+                    <h5 class="fw-bold card-title">Zakat</h5>
+                    <p class="card-text text-muted">
+                        Fulfill your religious obligation by giving Zakat. Your donation will be distributed to those most in need, purifying your wealth and serving as an act of worship.
+                    </p>
                 </div>
             </div>
         </div>
         <div class="col-md-6 col-lg-4">
             <div class="card h-100 border-0 shadow-sm p-4 text-center">
                 <div>
-                    <img src="~/Assets/EidGift.png" class="card-img" alt="Alternate Text" />
+                    <img src="~/Assets/Sadaqa.png" class="card-img" alt="Sadaqah Donation" />
                 </div>
                 <div class="card-body">
-
-                <i class="fas fa-gift fa-3x mb-3 text-primary"></i>
-                <h5 class="fw-bold card-title">Iftar & Eid Gifts</h5>
-                <p class="card-text text-muted">
-                    Help us provide Iftar meals for fasting families and give essential Eid gifts to children, ensuring everyone can celebrate with joy.
-                </p>
+                    <i class="fas fa-heart fa-3x mb-3 text-danger"></i>
+                    <h5 class="fw-bold card-title">Sadaqah</h5>
+                    <p class="card-text text-muted">
+                        Give voluntary charity to earn immense blessings. Sadaqah can be given at any time and for any amount, offering continuous rewards for you.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center">
+                <div>
+                    <img src="~/Assets/EidGift.png" class="card-img" alt="Iftar & Eid Gifts" />
+                </div>
+                <div class="card-body">
+                    <i class="fas fa-gift fa-3x mb-3 text-primary"></i>
+                    <h5 class="fw-bold card-title">Iftar & Eid Gifts</h5>
+                    <p class="card-text text-muted">
+                        Help us provide Iftar meals for fasting families and give essential Eid gifts to children, ensuring everyone can celebrate with joy.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section id="cta-donate" class="container-fluid bg-light py-5">   
+<section id="cta-donate" class="container-fluid bg-light py-5">
     <div class="container text-center">
         <h2 class="display-5 fw-bold mb-3">Make a Difference this Ramadan</h2>
         <p class="lead text-muted mb-4">
             Your support can change a life. Join our community of givers and share the blessings of this holy month.
         </p>
-        <button onclick="location.href='@Url.Page("/Donation")'" class="btn btn-primary btn-lg rounded-pill px-5">Give Now</button>
+        <a asp-page="/Donation" asp-route-fundraiserId="4" class="btn btn-primary btn-lg rounded-pill px-5">Give Now</a>
     </div>
 </section>

@@ -1,5 +1,7 @@
 ﻿@page
 @model Donation_Website.Pages.WaterAidModel
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Water Aid";
 }
@@ -23,7 +25,6 @@
     <div class="container">
         <h1 class="text-center pb-4">Stories from the Field</h1>
         <div class="row g-4">
-
             <div class="col-md-4">
                 <div class="card h-100 shadow-lg rounded-4">
                     <img src="/Assets/Flood_1.jpg" class="card-img-top img-fluid" alt="Flood Relief 1">
@@ -34,7 +35,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="card h-100 shadow-lg rounded-4">
                     <img src="/Assets/Water_project.jpg" class="card-img-top img-fluid" alt="Water Project">
@@ -45,7 +45,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="card h-100 shadow-lg rounded-4">
                     <img src="/Assets/flood_3.jpg" class="card-img-top img-fluid" alt="Flood Relief 3">
@@ -56,7 +55,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -66,31 +64,27 @@
     <div class="container">
         <h1 class="text-center mb-4">Our Solutions & How You Can Help</h1>
         <div class="row g-4 text-center">
-
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm p-3">
                     <h5>Build Wells & Filtration Systems</h5>
                     <p>Provide clean water to communities in need by funding water wells and filtration units.</p>
-                    <a asp-page="/Donation" class="btn btn-success">Donate Now</a>
+                    <a asp-page="/Donation" asp-route-fundraiserId="5" class="btn btn-success">Donate Now</a>
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm p-3">
                     <h5>Emergency Relief</h5>
                     <p>Support families affected by floods, droughts, or disasters with safe drinking water kits and supplies.</p>
-                    <a asp-page="/Donation" class="btn btn-success">Donate Now</a>
+                    <a asp-page="/Donation" asp-route-fundraiserId="5" class="btn btn-success">Donate Now</a>
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="card h-100 shadow-sm p-3">
                     <h5>Community Awareness</h5>
                     <p>Help educate communities on water hygiene, sanitation, and safe water usage practices.</p>
-                    <a asp-page="/Donation" class="btn btn-success">Donate Now</a>
+                    <a asp-page="/Donation" asp-route-fundraiserId="5" class="btn btn-success">Donate Now</a>
                 </div>
             </div>
-
         </div>
     </div>
 </section>

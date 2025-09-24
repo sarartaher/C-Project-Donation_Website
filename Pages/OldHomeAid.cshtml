@@ -1,9 +1,12 @@
 ﻿@page
 @model Donation_Website.Pages.OldHomeAidModel
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     ViewData["Title"] = "Old People Aid";
 }
 
+<!-- Hero Section -->
 <section class="Old-hero p-5 text-white d-flex align-items-center">
     <div class="container text-center">
         <h1 class="display-4 fw-bold">Donate For the Old Age People</h1>
@@ -11,6 +14,7 @@
     </div>
 </section>
 
+<!-- Quote Section -->
 <section class="Old-qoute p-5 text-center text-white d-flex align-items-center">
     <div class="container">
         <h2 class="display-5 fw-bold mb-4">Quotes from the Quran</h2>
@@ -34,6 +38,7 @@
     </div>
 </section>
 
+<!-- Story Section -->
 <section class="Old-story p-5">
     <div class="container text-center">
         <h2 class="display-5 fw-bold mb-5">Stories</h2>
@@ -70,7 +75,7 @@
             </div>
         </div>
         <div class="mt-5">
-            <button onclick="location.href='@Url.Page("/Donation")'" class="btn btn-lg btn-primary rounded-pill px-5">Donate Now</button>
+            <a asp-page="/Donation" asp-route-fundraiserId="2" class="btn btn-lg btn-primary rounded-pill px-5">Donate Now</a>
         </div>
     </div>
 </section>
