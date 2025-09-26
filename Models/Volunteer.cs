@@ -1,6 +1,4 @@
-﻿using Donation_Website.Data;
-
-namespace Donation_Website.Models
+﻿namespace Donation_Website.Models
 {
     public class Volunteer
     {
@@ -15,5 +13,8 @@ namespace Donation_Website.Models
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        // Navigation
+        public ICollection<VolunteerAssignment> Assignments { get; set; }
     }
 }

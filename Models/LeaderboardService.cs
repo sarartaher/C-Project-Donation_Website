@@ -11,7 +11,7 @@
                 SELECT TOP 10 D.DonorId, D.Name AS DonorName, SUM(DN.Amount) AS TotalDonation
                 FROM Donation DN
                 JOIN Donor D ON DN.DonorId = D.DonorId
-                WHERE DN.Status = 'succeeded'
+                WHERE DN.Status = 'Completed'
                 GROUP BY D.DonorId, D.Name
                 ORDER BY SUM(DN.Amount) DESC;
             ";
@@ -27,8 +27,8 @@
                     {
                         topDonors.Add(new LeaderboardItem
                         {
-                            DonorName = reader.GetString(0),
-                            TotalDonation = reader.GetDecimal(1)
+                            DonorName = reader.GetString(1),
+                            TotalDonation = reader.GetDecimal(2)
                         });
                     }
                 }

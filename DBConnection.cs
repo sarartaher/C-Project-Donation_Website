@@ -5,7 +5,7 @@ namespace Donation_Website
     public class DBConnection
     {
 
-        private const string connectionString = @"Server=USER\SARAR;Initial Catalog=DonationManagementDB;Integrated Security=True;Encrypt=False;Trust Server Certificate=True";
+        private const string connectionString =@"Server=USER\SARAR;Database=DonationManagementDB;Integrated Security=True;Encrypt=False;TrustServerCertificate=True;";
 
         public SqlCommand GetQuery(string query)
             {

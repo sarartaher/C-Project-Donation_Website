@@ -1,0 +1,92 @@
+﻿@page
+@model Donation_Website.Pages.DonorProgressModel
+@{
+    ViewData["Title"] = "Donor Progress Timeline";
+    var totalDonation = 75000; // Example - fetch from DB for logged-in donor
+}
+<section class="container py-5">
+    <h1 class="text-center fw-bold mb-5 text-primary">Your Donor Progress</h1>
+    <div class="timeline d-flex justify-content-between text-center">
+        <!-- Silver -->
+        <div class="timeline-item">
+            <div class="timeline-circle silver @(totalDonation >= 2000 && totalDonation < 8000 ? "active"
+                 : "")">
+                <i class="bi bi-star"></i>
+            </div>
+            <div class="timeline-arrow silver"></div>
+            <h5 class="fw-bold text-secondary">Silver</h5>
+            <small>2,000+ BDT</small>
+            <p class="text-muted">Begin your donor journey as Silver.</p>
+        </div>
+        <!-- Gold -->
+        <div class="timeline-item">
+            <div class="timeline-circle gold @(totalDonation >= 8000 && totalDonation < 15000 ? "active"
+                 : "")">
+                <i class="bi bi-trophy"></i>
+            </div>
+            <div class="timeline-arrow gold"></div>
+            <h5 class="fw-bold text-warning">Gold</h5>
+            <small>8,000+ BDT</small>
+            <p class="text-muted">Gold donors create impactful change.</p>
+        </div>
+        <!-- Platinum -->
+        <div class="timeline-item">
+            <div class="timeline-circle platinum @(totalDonation >= 15000 && totalDonation < 30000 ?
+                 "active" : "")">
+                <i class="bi bi-gem"></i>
+            </div>
+            <div class="timeline-arrow platinum"></div>
+            <h5 class="fw-bold text-dark">Platinum</h5>
+            <small>15,000+ BDT</small>
+            <p class="text-muted">Platinum donors strengthen sustainable causes.</p>
+        </div>
+        <!-- Diamond -->
+        <div class="timeline-item">
+            <div class="timeline-circle diamond @(totalDonation >= 30000 && totalDonation < 60000 ?
+                 "active" : "")">
+                <i class="bi bi-diamond"></i>
+            </div>
+            <div class="timeline-arrow diamond"></div>
+            <h5 class="fw-bold text-info">Diamond</h5>
+            <small>30,000+ BDT</small>
+            <p class="text-muted">Diamond donors shine with leadership support.</p>
+        </div>
+        <!-- Emerald -->
+        <div class="timeline-item">
+            <div class="timeline-circle emerald @(totalDonation >= 60000 && totalDonation < 120000 ?
+                 "active" : "")">
+                <i class="bi bi-tree"></i>
+            </div>
+            <div class="timeline-arrow emerald"></div>
+            <h5 class="fw-bold text-success">Emerald</h5>
+            <small>60,000+ BDT</small>
+            <p class="text-muted">Emerald donors nurture future generations.</p>
+        </div>
+        <!-- Ruby -->
+        <div class="timeline-item">
+            <div class="timeline-circle ruby @(totalDonation >= 120000 && totalDonation < 200000 ?
+                 "active" : "")">
+                <i class="bi bi-heart-fill"></i>
+            </div>
+            <div class="timeline-arrow ruby"></div>
+            <h5 class="fw-bold text-danger">Ruby</h5>
+            <small>1,20,000+ BDT</small>
+            <p class="text-muted">Ruby donors are pillars of hope.</p>
+        </div>
+        <!-- Crown -->
+        <div class="timeline-item">
+            <div class="timeline-circle crown @(totalDonation >= 200000 ? "active" : "")">
+                <i class="bi bi-award-fill"></i>
+            </div>
+            <h5 class="fw-bold text-dark">Crown</h5>
+            <small>2,00,000+ BDT</small>
+            <p class="text-muted">Crown donors leave a legacy of compassion.</p>
+        </div>
+    </div>
+    <div class="text-center mt-5">
+        <h4 class="fw-bold">
+            Your Total Donations:
+            <span class="text-success">@totalDonation.ToString("N0") BDT</span>
+        </h4>
+    </div>
+</section>

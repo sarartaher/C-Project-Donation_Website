@@ -1,0 +1,136 @@
+﻿@page
+@model Donation_Website.Pages.DonationHistoryModel
+@{
+    ViewData["Title"] = "Donation History";
+}
+<div class="container py-5">
+    <!-- Page Header -->
+    <h2 class="text-primary fw-bold mb-4">Donation History</h2>
+    <!-- Search & Filters -->
+    <div class="card shadow-sm p-3 mb-4">
+        <div class="row g-3 align-items-end">
+            <!-- Search Box -->
+            <div class="col-md-3">
+                <label class="form-label">Search</label>
+                <input type="text" id="searchBox" class="form-control" placeholder="Search
+donations...">
+            </div>
+            <!-- Date Filter -->
+            <div class="col-md-3">
+                <label class="form-label">Date</label>
+                <input type="date" id="dateFilter" class="form-control">
+            </div>
+            <!-- Amount Filter -->
+            <div class="col-md-3">
+                <label class="form-label">Amount (Min)</label>
+                <input type="number" id="minAmount" class="form-control" placeholder="Min
+amount">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Amount (Max)</label>
+                <input type="number" id="maxAmount" class="form-control" placeholder="Max
+amount">
+            </div>
+            <!-- Event Filter -->
+            <div class="col-md-6">
+                <label class="form-label">Event Name</label>
+                <select id="eventFilter" class="form-select" multiple>
+                    <option value="Flood Relief">Flood Relief</option>
+                    <option value="Education Fund">Education Fund</option>
+                    <option value="Medical Support">Medical Support</option>
+                </select>
+                <small class="text-muted">
+                    Hold Ctrl (Windows) or Cmd (Mac) to select
+                    multiple
+                </small>
+            </div>
+            <!-- Reset Button -->
+            <div class="col-md-2">
+                <button class="btn btn-secondary w-100" id="resetFilters">Reset</button>
+            </div>
+        </div>
+    </div>
+    <!-- Donation History Table -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle">
+            <thead class="table-primary">
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Event Name</th>
+                    <th scope="col">Amount (৳)</th>
+                    <th scope="col" class="text-center">Receipt</th>
+                </tr>
+            </thead>
+            <tbody id="donationTable">
+                <tr>
+                    <td>2025-09-12</td>
+                    <td>10:45 AM</td>
+                    <td>Flood Relief</td>
+                    <td>5000</td>
+                    <td class="text-center">
+                        <a href="#" class="btn btn-sm btn-success">Download</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2025-09-15</td>
+                    <td>03:20 PM</td>
+                    <td>Education Fund</td>
+                    <td>2500</td>
+                    <td class="text-center">
+                        <a href="#" class="btn btn-sm btn-success">Download</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2025-09-17</td>
+                    <td>08:30 PM</td>
+                    <td>Medical Support</td>
+                    <td>3000</td>
+                    <td class="text-center">
+                        <a href="#" class="btn btn-sm btn-success">Download</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Filtering Script -->
+<script>
+     function filterTable() {
+     let search = document.getElementById("searchBox").value.toLowerCase();
+     let date = document.getElementById("dateFilter").value;
+     let minAmount = parseFloat(document.getElementById("minAmount").value) || 0;
+     let maxAmount = parseFloat(document.getElementById("maxAmount").value) ||
+    Infinity;
+     // Multiple selected events
+     let eventSelect = document.getElementById("eventFilter");
+     let selectedEvents = Array.from(eventSelect.selectedOptions).map(opt =>
+    opt.value.toLowerCase());
+     let rows = document.querySelectorAll("#donationTable tr");
+     rows.forEach(row => {
+     let text = row.innerText.toLowerCase();
+     let rowDate = row.cells[0].innerText.trim();
+     let rowEvent = row.cells[2].innerText.toLowerCase();
+     let rowAmount = parseFloat(row.cells[3].innerText) || 0;
+     let matchSearch = text.includes(search);
+     let matchDate = !date || rowDate === date;
+     let matchAmount = rowAmount >= minAmount && rowAmount <= maxAmount;
+     let matchEvent = selectedEvents.length === 0 || selectedEvents.includes(rowEvent);
+     row.style.display = (matchSearch && matchDate && matchAmount && matchEvent) ?
+    "" : "none";
+     });
+     }
+     // Attach event listeners
+     document.querySelectorAll("#searchBox, #dateFilter, #minAmount, #maxAmount,
+    #eventFilter")
+     .forEach(el => el.addEventListener("input", filterTable));
+     // Reset filters
+     document.getElementById("resetFilters").addEventListener("click", () => {
+     document.getElementById("searchBox").value = "";
+     document.getElementById("dateFilter").value = "";
+     document.getElementById("minAmount").value = "";
+     document.getElementById("maxAmount").value = "";
+     document.getElementById("eventFilter").selectedIndex = -1;
+     filterTable();
+     });
+</script>

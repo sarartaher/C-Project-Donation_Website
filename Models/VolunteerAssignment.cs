@@ -9,5 +9,10 @@
         public int Hours { get; set; }
         public string ProjectTitle { get; set; } = "";
         public string WorkTitle { get; set; } = "";
+
+        // Navigation
+        public Volunteer Volunteer { get; set; }
+        public Project Project { get; set; }
+        public WorkOfOrganization Work { get; set; }
     }
 }

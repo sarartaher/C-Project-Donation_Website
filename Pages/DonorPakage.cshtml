@@ -1,0 +1,92 @@
+﻿@page
+@model Donation_Website.Pages.DonorPakageModel
+@{
+    ViewData["Title"] = "Donor Packages";
+}
+<section class="p-5">
+    <header class="text-center mb-5">
+        <h1 class="fw-bold text-dark">Impact Levels</h1>
+        <p class="text-muted">
+            Choose a level that matches your generosity and create lasting
+            change.
+        </p>
+    </header>
+    <div class="row g-4">
+        <!-- Care Giver -->
+        <div class="col-12 col-md-3">
+            <form method="post" asp-page-handler="Donate">
+                <div class="card h-100 shadow-sm border-0" style="background-color:#ecfdf5;">
+                    <div class="card-body text-center">
+                        <div class="fs-1 mb-3"> </div>
+                        <h5 class="card-title fw-bold">Care Giver</h5>
+                        <p class="text-muted">
+                            Supports Orphans + Old Homes. Focus on human compassion
+                            & shelter.
+                        </p>
+                        <h6 class="fw-bold text-success">৳2,000</h6>
+                        <input type="hidden" name="FundraiserId" value="1" />
+                        <input type="hidden" name="Amount" value="2000" />
+                        <button type="submit" class="btn btn-success mt-3">Donate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- Faith Giver -->
+        <div class="col-12 col-md-3">
+            <form method="post" asp-page-handler="Donate">
+                <div class="card h-100 shadow-sm border-0" style="background-color:#fef3c7;">
+                    <div class="card-body text-center">
+                        <div class="fs-1 mb-3"> </div>
+                        <h5 class="card-title fw-bold">Faith Giver</h5>
+                        <p class="text-muted">
+                            Supports Zakat + Eid & Ramadan. Spiritual giving & festive
+                            blessings.
+                        </p>
+                        <h6 class="fw-bold text-warning">৳5,000</h6>
+                        <input type="hidden" name="FundraiserId" value="2" />
+                        <input type="hidden" name="Amount" value="5000" />
+                        <button type="submit" class="btn btn-warning mt-3">Donate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- Life Giver -->
+        <div class="col-12 col-md-3">
+            <form method="post" asp-page-handler="Donate">
+                <div class="card h-100 shadow-sm border-0" style="background-color:#ede9fe;">
+                    <div class="card-body text-center">
+                        <div class="fs-1 mb-3"> </div>
+                        <h5 class="card-title fw-bold">Life Giver</h5>
+                        <p class="text-muted">
+                            Supports Water Aid + Tree Plantation. Builds sustainability for
+                            people & planet.
+                        </p>
+                        <h6 class="fw-bold text-primary">৳10,000</h6>
+                        <input type="hidden" name="FundraiserId" value="3" />
+                        <input type="hidden" name="Amount" value="10000" />
+                        <button type="submit" class="btn btn-primary mt-3">Donate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- Humanity Giver -->
+        <div class="col-12 col-md-3">
+            <form method="post" asp-page-handler="Donate">
+                <div class="card h-100 shadow-sm border-0" style="background-color:#d1fae5;">
+                    <div class="card-body text-center">
+                        <div class="fs-1 mb-3"> </div>
+                        <h5 class="card-title fw-bold">Humanity Giver</h5>
+                        <p class="text-muted">
+                            Supports all 6 causes. A complete donor who impacts every
+                            field.
+                        </p>
+                        <h6 class="fw-bold text-info">৳30,000</h6>
+                        <input type="hidden" name="FundraiserId" value="4" />
+                        <input type="hidden" name="Amount" value="30000" />
+                        <button type="submit" class="btn btn-info mt-3">Donate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

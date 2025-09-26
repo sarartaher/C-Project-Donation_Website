@@ -1,6 +1,4 @@
-﻿using Donation_Website.Data;
-
-namespace Donation_Website.Models
+﻿namespace Donation_Website.Models
 {
     public class DonationCategory
     {

@@ -18,7 +18,6 @@
                         </a>
                     </div>
                     <div class="card-body" id="donationList">
-
                         @if (Model.Donations.Count > 0)
                         {
                             @foreach (var donation in Model.Donations)
@@ -27,14 +26,11 @@
                                     <div class="col-lg-3 col-md-12 mb-3">
                                         <img src="images/default.jpg" class="w-100 rounded" alt="Donation Event">
                                     </div>
-
                                     <div class="col-lg-9 col-md-12 mb-3">
                                         <p><strong>@donation.EventName</strong></p>
                                         <p>Secret Name: Anonymous</p>
                                         <p>Amount: $@donation.Amount</p>
                                         <p>Date: <span class="text-muted">@donation.Date.ToString("yyyy-MM-dd hh:mm tt")</span></p>
-
-                                        <!-- Actions -->
                                         <button class="btn btn-sm btn-success me-2 selectBtn">
                                             <i class="fas fa-check"></i> Select
                                         </button>
@@ -49,7 +45,6 @@
                         {
                             <p class="text-center text-muted">No donations found. Add some donations first.</p>
                         }
-
                     </div>
                 </div>
             </div>
@@ -64,8 +59,6 @@
                         <ul class="list-group mb-3" id="selectedList">
                             <!-- Selected items will appear here -->
                         </ul>
-
-                        <!-- Subtotal & Total -->
                         <ul class="list-group mb-3">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Subtotal</span>
@@ -76,8 +69,6 @@
                                 <strong>$<span id="totalAmount">0</span></strong>
                             </li>
                         </ul>
-
-                        <!-- Payment Methods -->
                         <h6 class="mb-3">Payment Method</h6>
                         <div class="form-check mb-2">
                             <input class="form-check-input" type="radio" name="paymentMethod" id="mobilePay" checked>
@@ -91,21 +82,15 @@
                                 Card Payment (Visa / Mastercard)
                             </label>
                         </div>
-
-                        <!-- Donation Done -->
                         <button class="btn btn-success w-100 mb-2" id="donationDoneBtn">
                             Donation Done
                         </button>
-
-                        <!-- Receipt Button -->
                         <button class="btn btn-outline-primary w-100" id="receiptBtn">
                             <i class="fas fa-file-invoice"></i> Receipt of Donation Document
                         </button>
-
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>

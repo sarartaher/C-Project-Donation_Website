@@ -10,5 +10,10 @@
         public int DonorID { get; set; }
         public int DonationId { get; set; }
         public int ProjectId { get; set; }
+
+        // Navigation
+        public Donor Donor { get; set; }
+        public Donation Donation { get; set; }
+        public Project Project { get; set; }
     }
 }

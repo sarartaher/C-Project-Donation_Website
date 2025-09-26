@@ -1,13 +1,16 @@
 ﻿namespace Donation_Website.Models
 {
-    public class WorksOfOrganization
+    public class WorkOfOrganization
     {
-        public int WorksOfOrganizationId { get; set; }
+        public int WorkID { get; set; }
+        public int ProjectID { get; set; }
         public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public int? ProjectId { get; set; }
+        public string? Description { get; set; }
+        public DateTime? Date { get; set; }
+        public DateTime? PublishedAt { get; set; }
 
         // Navigation
-        public Project? Project { get; set; }
+        public Project Project { get; set; }
+        public ICollection<VolunteerAssignment> Assignments { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Donation_Website.Data;
 using Donation_Website.Models;
 using Microsoft.EntityFrameworkCore;
+using Donation_Website;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+builder.Services.AddScoped<DBConnection>();
 
 var app = builder.Build();
 

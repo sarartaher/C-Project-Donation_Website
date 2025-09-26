@@ -2,13 +2,13 @@
 {
     public class AuditLog
     {
-        public int AuditLogId { get; set; }
-        public int AdminUserId { get; set; }
-        public string Action { get; set; } = string.Empty;
-        public DateTime Date { get; set; }
-        public string? Before { get; set; }
-        public string? After { get; set; }
-        public string? IPAddress { get; set; }
+        public int AuditID { get; set; }
+        public int AdminID { get; set; }
+        public string? Name { get; set; }
+        public string? Action { get; set; }
+        public string? BeforeData { get; set; }
+        public string? AfterData { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         // Navigation
         public User? AdminUser { get; set; }
