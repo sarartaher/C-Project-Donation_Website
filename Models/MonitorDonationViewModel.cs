@@ -1,11 +1,11 @@
 ﻿namespace Donation_Website.Models
 {
-    public class CartItemViewModel
+    public class MonitorDonationViewModel
     {
-        public int CartItemID { get; set; }   // match the code and DB query
+        public string DonorName { get; set; }
         public string FundraiserTitle { get; set; }
         public decimal Amount { get; set; }
+        public DateTime Date { get; set; }
         public string Status { get; set; }
     }
-
 }

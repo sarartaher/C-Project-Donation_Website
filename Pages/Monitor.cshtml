@@ -1,12 +1,58 @@
 ﻿@page
 @model Donation_Website.Pages.MonitorModel
 @{
+    ViewData["Title"] = "Donor Monitoring";
 }
-<section class="container mt-4">
-    <h2>Donor Monitoring</h2>
-    <p>Track donor accounts and activity.</p>
-    <ul class="list-group">
-        <li class="list-group-item">Donor Name: Donor A, Last Donation: $500</li>
-        <li class="list-group-item">Donor Name: Donor B, Last Donation: $100</li>
-    </ul>
+
+<section class="container mt-5">
+    <h2 class="mb-4 text-center">Donor Monitoring</h2>
+    <p class="text-center text-muted mb-4">Track all donor accounts and donation activity.</p>
+
+    @if (Model.Donations?.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Donor</th>
+                        <th>Email</th>
+                        <th>Donation Amount</th>
+                        <th>Currency</th>
+                        <th>Status</th>
+                        <th>Payment Method</th>
+                        <th>Payment Status</th>
+                        <th>Gateway</th>
+                        <th>Date</th>
+                        <th>Transaction Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Donations.Count; i++)
+                    {
+                        var donation = Model.Donations[i];
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>@donation.DonorName</td>
+                            <td>@donation.DonorEmail</td>
+                            <td>@donation.Amount.ToString("0.00")</td>
+                            <td>@donation.Currency</td>
+                            <td>@donation.Status</td>
+                            <td>@donation.PaymentMethod</td>
+                            <td>@donation.PaymentStatus</td>
+                            <td>@donation.Gateway</td>
+                            <td>@donation.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>@(donation.TransactionDate == DateTime.MinValue ? "-" : donation.TransactionDate.ToString("yyyy-MM-dd HH:mm"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">
+            No donations found yet.
+        </div>
+    }
 </section>

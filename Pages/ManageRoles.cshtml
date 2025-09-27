@@ -1,39 +1,72 @@
 ﻿@page
 @model Donation_Website.Pages.ManageRolesModel
 @{
-
+    ViewData["Title"] = "Manage Roles";
 }
-<section class="container mt-4">
-    <h2>User Role Management</h2>
-    <p>Assign, modify, or remove user roles.</p>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoleModal">Add New Role</button>
-    <div class="table-responsive mt-3">
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Role ID</th>
-                    <th scope="col">Role Name</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Administrator</td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-info">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Volunteer</td>
-                    <td>
-                        <a href="#" class="btn btn-sm btn-info">Edit</a>
-                        <a href="#" class="btn btn-sm btn-danger">Delete</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+
+<section class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>User Role Management</h2>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Message))
+    {
+        <div class="alert alert-info">@Model.Message</div>
+    }
+
+    <form method="get">
+        <select name="selectedRole" onchange="this.form.submit()" class="form-select mb-3">
+            <option value="">All</option>
+            @foreach (var role in new string[] { "Admin", "Donor", "Volunteer" })
+            {
+                <option value="@role" selected="@(Model.SelectedRole == role ? "selected" : null)">@role</option>
+            }
+        </select>
+    </form>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Change Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>@user.Name</td>
+                                <td>@user.Email</td>
+                                <td>@user.Phone</td>
+                                <td>@user.Table</td>
+                                <td>
+                                    <form method="post" asp-page-handler="ChangeRole">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <input type="hidden" name="currentRole" value="@user.Table" />
+                                        <select name="newRole" class="form-select form-select-sm" required>
+                                            <option value="">Select Role</option>
+                                            @foreach (var role in new string[] { "Admin", "Donor", "Volunteer" })
+                                            {
+                                                if (role != user.Table)
+                                                {
+                                                    <option value="@role">@role</option>
+                                                }
+                                            }
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-primary mt-1">Change</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </section>

@@ -1,5 +1,6 @@
 ﻿@page
 @model Donation_Website.Pages.cartModel
+@using Donation_Website.Models
 @{
     ViewData["Title"] = "Cart";
 }
@@ -7,7 +8,6 @@
 <section class="h-100">
     <div class="container py-5">
         <div class="row d-flex justify-content-center my-4">
-
             <!-- LEFT SIDE (Donation List) -->
             <div class="col-md-8">
                 <div class="card mb-4">
@@ -18,23 +18,21 @@
                         </a>
                     </div>
                     <div class="card-body" id="donationList">
-                        @if (Model.Donations.Count > 0)
+                        @if (Model.Donations?.Count > 0)
                         {
                             @foreach (var donation in Model.Donations)
                             {
-                                <div class="row mb-4 donation-item">
+                                <div class="row mb-4 donation-item" data-cart-item-id="@donation.CartItemsId">
                                     <div class="col-lg-3 col-md-12 mb-3">
-                                        <img src="images/default.jpg" class="w-100 rounded" alt="Donation Event">
+                                        <img src="/images/default.jpg" class="w-100 rounded" alt="Donation Event" />
                                     </div>
                                     <div class="col-lg-9 col-md-12 mb-3">
                                         <p><strong>@donation.EventName</strong></p>
-                                        <p>Secret Name: Anonymous</p>
-                                        <p>Amount: $@donation.Amount</p>
+                                        <p>Secret Name: @donation.SecretName</p>
+                                        <p>Amount: @(donation.Amount.HasValue ? $"BDT{donation.Amount.Value:0.00}" : "BDT0.00")</p>
                                         <p>Date: <span class="text-muted">@donation.Date.ToString("yyyy-MM-dd hh:mm tt")</span></p>
-                                        <button class="btn btn-sm btn-success me-2 selectBtn">
-                                            <i class="fas fa-check"></i> Select
-                                        </button>
-                                        <button class="btn btn-sm btn-danger deleteBtn">
+                                        <!-- Actions -->
+                                        <button class="btn btn-sm btn-danger deleteBtn" data-cart-item-id="@donation.CartItemsId">
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
                                     </div>
@@ -57,40 +55,95 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-group mb-3" id="selectedList">
-                            <!-- Selected items will appear here -->
+                            @foreach (var donation in Model.Donations ?? Enumerable.Empty<DonationViewModel>())
+                            {
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>@donation.EventName</span>
+                                    <strong>@(donation.Amount.HasValue ? $"BDT{donation.Amount.Value:0.00}" : "BDT0.00")</strong>
+                                </li>
+                            }
                         </ul>
+
+                        <!-- Subtotal & Total -->
                         <ul class="list-group mb-3">
                             <li class="list-group-item d-flex justify-content-between">
                                 <span>Subtotal</span>
-                                <strong>$<span id="subTotal">0</span></strong>
+                                <strong>BDT<span id="subTotal">@Model.SubTotal.ToString("0.00")</span></strong>
                             </li>
                             <li class="list-group-item d-flex justify-content-between">
-                                <span>Total (incl. fees)</span>
-                                <strong>$<span id="totalAmount">0</span></strong>
+                                <span>Total</span>
+                                <strong>BDT<span id="totalAmount">@Model.TotalAmount.ToString("0.00")</span></strong>
                             </li>
                         </ul>
-                        <h6 class="mb-3">Payment Method</h6>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="mobilePay" checked>
-                            <label class="form-check-label" for="mobilePay">
-                                Mobile Payment (bKash / Nagad / PayPal)
-                            </label>
-                        </div>
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="cardPay">
-                            <label class="form-check-label" for="cardPay">
-                                Card Payment (Visa / Mastercard)
-                            </label>
-                        </div>
-                        <button class="btn btn-success w-100 mb-2" id="donationDoneBtn">
-                            Donation Done
-                        </button>
-                        <button class="btn btn-outline-primary w-100" id="receiptBtn">
-                            <i class="fas fa-file-invoice"></i> Receipt of Donation Document
-                        </button>
+
+                        <!-- Payment Methods -->
+                        <form method="post" asp-page-handler="Checkout">
+                            <h6 class="mb-3">Payment Method</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="mobilePay" value="Mobile" checked />
+                                <label class="form-check-label" for="mobilePay">Mobile Payment (bKash / Nagad / PayPal)</label>
+                            </div>
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="cardPay" value="Card" />
+                                <label class="form-check-label" for="cardPay">Card Payment (Visa / Mastercard)</label>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 mb-2" id="donationDoneBtn">
+                                Donation Done
+                            </button>
+                        </form>
+
+                        <!-- Download Receipt -->
+                        <a class="btn btn-outline-primary w-100"
+                           asp-page-handler="DownloadReceipt"
+                           asp-route-cartId="@Model.Donations.FirstOrDefault()?.CartId">
+                            <i class="fas fa-file-invoice"></i> Download Receipt (PDF)
+                        </a>
+
+
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const donationList = document.getElementById('donationList');
+        const subTotalElement = document.getElementById('subTotal');
+        const totalAmountElement = document.getElementById('totalAmount');
+
+        function updateTotals() {
+            let subTotal = 0;
+            donationList.querySelectorAll('.donation-item').forEach(item => {
+                const amountText = item.querySelector('p:nth-child(3)').textContent.match(/BDT([\d.]+)/);
+                if (amountText) subTotal += parseFloat(amountText[1]);
+            });
+            subTotalElement.textContent = subTotal.toFixed(2);
+            totalAmountElement.textContent = subTotal.toFixed(2);
+        }
+
+        updateTotals();
+
+        // Delete Cart Item
+        donationList.addEventListener('click', (e) => {
+            const btn = e.target.closest('.deleteBtn');
+            if (!btn) return;
+
+            const cartItemId = btn.getAttribute('data-cart-item-id');
+
+            fetch(`/cart?handler=Remove`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `cartItemId=${cartItemId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) location.reload();
+                else alert(data.message || 'Error deleting item.');
+            });
+        });
+    });
+</script>

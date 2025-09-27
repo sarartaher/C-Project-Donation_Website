@@ -13,5 +13,8 @@
         public string PaymentStatus { get; set; }
         public string Gateway { get; set; }
         public DateTime TransactionDate { get; set; }
+        public string DonorName { get; set; } = "";
+        public string DonorEmail { get; set; } = "";
     }
+
 }

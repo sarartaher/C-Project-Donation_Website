@@ -1,8 +1,9 @@
 using Donation_Website.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Data.SqlClient;
-using System.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Donation_Website.Pages
 {
@@ -11,128 +12,164 @@ namespace Donation_Website.Pages
         private readonly DBConnection _db = new DBConnection();
         private readonly Users _users = new Users();
 
-        public List<FundraiserViewModel> Fundraisers { get; set; } = new List<FundraiserViewModel>();
-        public int SelectedFundraiserId { get; set; }
-        public decimal PrefilledAmount { get; set; }
+        [BindProperty] public int FundraiserId { get; set; }
+        [BindProperty] public decimal Amount { get; set; }
+        [BindProperty] public string DonorName { get; set; }
+        [BindProperty] public string DonorEmail { get; set; }
 
-        public void OnGet(int? fundraiserId = null, double? amount = null)
+        public List<Fundraiser> Fundraisers { get; set; } = new List<Fundraiser>();
+        public int SelectedFundraiserId { get; set; }
+        public decimal PrefilledAmount { get; set; } = 100;
+
+        public void OnGet(int? fundraiserId, decimal? amount)
         {
-            LoadFundraisers();
-            if (fundraiserId.HasValue)
-            {
-                SelectedFundraiserId = fundraiserId.Value;
-            }
-            if (amount.HasValue)
-            {
-                PrefilledAmount = (decimal)amount.Value;
-            }
+            Fundraisers = GetFundraisers();
+            SelectedFundraiserId = fundraiserId ?? 0;
+            PrefilledAmount = amount ?? 100;
         }
 
-        private void LoadFundraisers()
+        public IActionResult OnPostAddToCart()
         {
-            string query = @"SELECT FundraiserID, Title, TargetAmount, StartDate, EndDate, ProjectID, IsActive
-                            FROM Fundraiser
-                            WHERE IsActive = 1
-                            ORDER BY StartDate ASC";
+            int donorId = GetDonorId();
+            int cartId = GetOrCreateCart(donorId);
 
-            using (var cmd = _db.GetQuery(query))
+            using (var cmd = _db.GetQuery(@"
+                INSERT INTO CartItems (CartId, FundraiserId, Amount, CreatedAt)
+                VALUES (@CartId, @FundraiserId, @Amount, GETDATE())
+            "))
+            {
+                cmd.Parameters.AddWithValue("@CartId", cartId);
+                cmd.Parameters.AddWithValue("@FundraiserId", FundraiserId);
+                cmd.Parameters.AddWithValue("@Amount", Amount);
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+            }
+
+            TempData["Success"] = "Donation added to cart!";
+            return RedirectToPage("/cart");
+        }
+
+        private List<Fundraiser> GetFundraisers()
+        {
+            var list = new List<Fundraiser>();
+            using (var cmd = _db.GetQuery("SELECT FundraiserID, Title FROM Fundraiser"))
             {
                 cmd.Connection.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        Fundraisers.Add(new FundraiserViewModel
+                        list.Add(new Fundraiser
                         {
-                            FundraiserId = reader.GetInt32("FundraiserID"),
-                            ProjectId = reader.GetInt32("ProjectID"),
-                            Title = reader.GetString("Title"),
-                            TargetAmount = reader["TargetAmount"] == DBNull.Value ? 0m : reader.GetDecimal("TargetAmount"),
-                            StartDate = reader["StartDate"] == DBNull.Value ? DateTime.MinValue : reader.GetDateTime("StartDate"),
-                            EndDate = reader["EndDate"] == DBNull.Value ? DateTime.MinValue : reader.GetDateTime("EndDate")
+                            FundraiserID = (int)reader["FundraiserID"],
+                            Title = reader["Title"].ToString()
                         });
                     }
                 }
                 cmd.Connection.Close();
             }
+            return list;
         }
 
-        public IActionResult OnPost(int fundraiserId, decimal amount, string? secretName = null)
+        private int GetDonorId()
         {
-            if (!ModelState.IsValid)
+            int donorId = 0;
+            if (User.Identity?.IsAuthenticated == true)
             {
-                LoadFundraisers();
-                return Page();
-            }
-
-            try
-            {
-                // Get logged-in donor ID
-                string email = User.Identity?.Name ?? "donor1@gmail.com"; // Fallback for testing
+                string email = User.Identity.Name;
                 var (user, userType) = _users.SearchUser(email);
-
-                if (userType != "Donor" || user == null)
-                {
-                    ModelState.AddModelError("", "You must be logged in as a donor to donate.");
-                    LoadFundraisers();
-                    return Page();
-                }
-
-                int donorId = (user as Donor)?.DonorID ?? 0;
-                if (donorId == 0)
-                {
-                    ModelState.AddModelError("", "Invalid donor ID.");
-                    LoadFundraisers();
-                    return Page();
-                }
-
-                using (var cmd = _db.GetQuery("SELECT 1"))
-                {
-                    cmd.Connection.Open();
-
-                    // Get or create pending cart
-                    int cartId;
-                    string getCart = "SELECT TOP 1 CartID FROM Cart WHERE DonorID = @DonorID AND Status = 'Pending'";
-                    using (var cartCmd = new SqlCommand(getCart, cmd.Connection))
-                    {
-                        cartCmd.Parameters.AddWithValue("@DonorID", donorId);
-                        var result = cartCmd.ExecuteScalar();
-                        if (result != null)
-                        {
-                            cartId = (int)result;
-                        }
-                        else
-                        {
-                            string insertCart = "INSERT INTO Cart (DonorID, Status, CreatedAt, UpdatedAt) VALUES (@DonorID, 'Pending', GETDATE(), GETDATE()); SELECT SCOPE_IDENTITY();";
-                            using (var insertCmd = new SqlCommand(insertCart, cmd.Connection))
-                            {
-                                insertCmd.Parameters.AddWithValue("@DonorID", donorId);
-                                cartId = Convert.ToInt32(insertCmd.ExecuteScalar());
-                            }
-                        }
-                    }
-
-                    // Add donation to cart items
-                    string insertItem = "INSERT INTO CartItems (CartID, FundraiserID, Amount, CreatedAt) VALUES (@CartID, @FundraiserID, @Amount, GETDATE())";
-                    using (var insertItemCmd = new SqlCommand(insertItem, cmd.Connection))
-                    {
-                        insertItemCmd.Parameters.AddWithValue("@CartID", cartId);
-                        insertItemCmd.Parameters.AddWithValue("@FundraiserID", fundraiserId);
-                        insertItemCmd.Parameters.AddWithValue("@Amount", amount);
-                        insertItemCmd.ExecuteNonQuery();
-                    }
-
-                    cmd.Connection.Close();
-                }
-
-                return RedirectToPage("/cart");
+                donorId = (userType == "Donor" && user != null) ? (user as Donor).DonorID : CreateGuestDonor();
             }
-            catch (Exception ex)
+            else
             {
-                ModelState.AddModelError("", "An error occurred while adding to cart. Please try again.");
-                LoadFundraisers();
-                return Page();
+                donorId = CreateGuestDonor();
             }
+            return donorId;
+        }
+
+        private int CreateGuestDonor()
+        {
+            int guestId = 0;
+
+            // First, try to find an existing guest donor in session or DB
+            string sessionKey = HttpContext.Session.GetString("GuestDonorEmail");
+            string guestEmail;
+
+            if (!string.IsNullOrEmpty(sessionKey))
+            {
+                guestEmail = sessionKey;
+                using (var cmdCheck = _db.GetQuery("SELECT DonorID FROM Donor WHERE Email=@Email"))
+                {
+                    cmdCheck.Parameters.AddWithValue("@Email", guestEmail);
+                    cmdCheck.Connection.Open();
+                    var result = cmdCheck.ExecuteScalar();
+                    cmdCheck.Connection.Close();
+                    if (result != null)
+                    {
+                        return (int)result; // Reuse existing guest donor
+                    }
+                }
+            }
+
+            // Generate a new unique guest email
+            guestEmail = $"guest{Guid.NewGuid().ToString("N").Substring(0, 12)}@guest.com";
+            HttpContext.Session.SetString("GuestDonorEmail", guestEmail); // save in session
+
+            string dummyPassword = "GUEST";
+
+            using (var cmd = _db.GetQuery(@"
+        INSERT INTO Donor (Name, Email, PasswordHash, CreatedAt)
+        OUTPUT INSERTED.DonorID
+        VALUES ('Guest', @Email, @PasswordHash, GETDATE())
+    "))
+            {
+                cmd.Parameters.AddWithValue("@Email", guestEmail);
+                cmd.Parameters.AddWithValue("@PasswordHash", dummyPassword);
+                cmd.Connection.Open();
+                guestId = (int)cmd.ExecuteScalar();
+                cmd.Connection.Close();
+            }
+
+            return guestId;
+        }
+
+
+        private int GetOrCreateCart(int donorId)
+        {
+            int cartId = 0;
+
+            using (var cmd = _db.GetQuery(@"
+                SELECT TOP 1 CartID FROM Cart 
+                WHERE DonorID=@DonorID AND (Status IS NULL OR Status='Pending') 
+                ORDER BY CreatedAt DESC
+            "))
+            {
+                cmd.Parameters.AddWithValue("@DonorID", donorId);
+                cmd.Connection.Open();
+                var result = cmd.ExecuteScalar();
+                if (result != null)
+                {
+                    cartId = (int)result;
+                }
+                else
+                {
+                    using (var cmdInsert = _db.GetQuery(@"
+                        INSERT INTO Cart (DonorID, Status, CreatedAt) 
+                        OUTPUT INSERTED.CartID
+                        VALUES (@DonorID, 'Pending', GETDATE())
+                    "))
+                    {
+                        cmdInsert.Parameters.AddWithValue("@DonorID", donorId);
+                        cmdInsert.Connection.Open();
+                        cartId = (int)cmdInsert.ExecuteScalar();
+                        cmdInsert.Connection.Close();
+                    }
+                }
+                cmd.Connection.Close();
+            }
+
+            return cartId;
         }
     }
 }

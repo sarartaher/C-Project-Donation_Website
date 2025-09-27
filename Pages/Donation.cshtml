@@ -4,19 +4,18 @@
     ViewData["Title"] = "Donation";
 }
 
-<!-- Image Slider -->
+<!-- Carousel -->
 <div id="donationCarousel" class="carousel slide mb-5" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="/Assets/Flood_1.jpg" class="d-block w-100 " alt="Banner 1">
+            <img src="/Assets/Flood_1.jpg" class="d-block w-100" alt="Banner 1">
         </div>
         <div class="carousel-item">
-            <img src="/Assets/flood_2.jpg" class="d-block w-100 " alt="Banner 2">
+            <img src="/Assets/flood_2.jpg" class="d-block w-100" alt="Banner 2">
         </div>
         <div class="carousel-item">
-            <img src="/Assets/flood_3.jpg" class="d-block w-100 " alt="Banner 3">
+            <img src="/Assets/flood_3.jpg" class="d-block w-100" alt="Banner 3">
         </div>
-
         <button class="carousel-control-prev" type="button" data-bs-target="#donationCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
         </button>
@@ -30,52 +29,31 @@
 <div class="container">
     <div class="card shadow p-4 mb-5">
         <h2 class="text-center text-primary mb-4">Make a Donation</h2>
-        <form method="post">
-            <!-- Event Dropdown -->
+        <form method="post" asp-page-handler="AddToCart">
             <div class="mb-3">
                 <label for="eventSelect" class="form-label">Select Event</label>
                 <select class="form-select" id="eventSelect" name="fundraiserId" required>
                     <option value="" disabled selected>Choose an event...</option>
                     @foreach (var f in Model.Fundraisers)
                     {
-                        <option value="@f.FundraiserId" selected="@(f.FundraiserId == Model.SelectedFundraiserId)">@f.Title</option>
+                        <option value="@f.FundraiserID" selected="@(f.FundraiserID == Model.SelectedFundraiserId)">
+                            @f.Title
+                        </option>
                     }
                 </select>
             </div>
 
-            <!-- Secret Name -->
             <div class="mb-3">
                 <label for="secretName" class="form-label">Secret Name (Optional)</label>
                 <input type="text" class="form-control" id="secretName" name="secretName" placeholder="Enter secret name">
             </div>
 
-            <!-- Donation Amount -->
             <div class="mb-3">
-                <label for="amount" class="form-label">Donation Amount ($)</label>
-                <input type="number" class="form-control" id="amount" name="amount" placeholder="Enter amount" value="@Model.PrefilledAmount.ToString("0.00")" required>
+                <label for="amount" class="form-label">Donation Amount (BDT)</label>
+                <input type="number" class="form-control" id="amount" name="amount" value="@Model.PrefilledAmount.ToString("0.00")" step="0.01" required>
             </div>
 
-            <!-- Confirm Button -->
             <button type="submit" class="btn btn-success w-100">Confirm Donation</button>
         </form>
-    </div>
-</div>
-
-<!-- Cart Section -->
-<div class="container">
-    <div class="card shadow p-4">
-        <h2 class="text-center text-warning mb-4">Donation Cart</h2>
-        <table class="table table-bordered text-center" id="cartTable">
-            <thead class="table-dark">
-                <tr>
-                    <th>Event</th>
-                    <th>Secret Name</th>
-                    <th>Amount ($)</th>
-                </tr>
-            </thead>
-            <tbody>
-                @* Now, the cart is displayed from backend in cart page. No JS needed here. *@
-            </tbody>
-        </table>
     </div>
 </div>
