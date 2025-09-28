@@ -8,8 +8,13 @@
         public int Rating { get; set; }
         public string Comment { get; set; } = string.Empty;
         public DateTime Date { get; set; }
+
         // Navigation
         public User? User { get; set; }
         public Project? Project { get; set; }
+
+        // Computed properties for display
+        public string UserName => User?.Name ?? "Anonymous";
+        public string ProjectTitle => Project?.Title ?? "Unknown Event";
     }
 }

@@ -1,10 +1,12 @@
+using Donation_Website.Data;
 using Donation_Website.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions; // For potential sanitization, if needed
+using Donation_Website.Models;
+using System.Text.RegularExpressions;
 
 namespace Donation_Website.Pages
 {
@@ -12,26 +14,35 @@ namespace Donation_Website.Pages
     {
         private readonly DBConnection _db = new DBConnection();
 
+        // ===================== EXISTING LOGIC (KEEP UNCHANGED) =====================
         public decimal TotalCollected { get; set; }
         public int Percentage { get; set; }
         private const decimal GoalAmount = 100000m;
         public List<LeaderboardItem> TopDonors { get; set; }
+        public List<FundraiserViewModel> Fundraisers { get; set; } = new List<FundraiserViewModel>();
+        // ===========================================================================
 
-        // Comment Form Properties
+        // ===================== COMMENT SECTION =====================
+        // Fully qualified to avoid ambiguity
+        public List<Donation_Website.Models.Review> Comments { get; set; } = new List<Donation_Website.Models.Review>();
+
+
         [BindProperty]
         public string CommentName { get; set; }
+        [BindProperty]
+        public int SelectedFundraiserId { get; set; } // For showing selected dropdown after post
         [BindProperty]
         public int ProjectId { get; set; }
         [BindProperty]
         public int Rating { get; set; }
         [BindProperty]
         public string CommentContent { get; set; }
-
-        public List<Review> Comments { get; set; } = new List<Review>();
+        // ===========================================================================
 
         public void OnGet()
         {
-            // Total Collected & Percentage
+            // ===================== EXISTING LOGIC (KEEP UNCHANGED) =====================
+            // Total Collected & Percentage (overall)
             using (var cmd = _db.GetQuery("SELECT SUM(Amount) FROM Donation"))
             {
                 cmd.Connection.Open();
@@ -46,19 +57,14 @@ namespace Donation_Website.Pages
             var leaderboard = new LeaderboardService();
             TopDonors = leaderboard.GetTopDonors();
 
-            // Load Comments
-            LoadComments();
-        }
-
-        public void LoadComments()
-        {
+            // Load Fundraisers with progress
             string query = @"
-                SELECT r.*, d.Name AS UserName
-                FROM Review r
-                LEFT JOIN Donor d ON r.DonorId = d.DonorId
-                ORDER BY Date DESC";
-
-            Comments.Clear();
+                SELECT f.FundraiserID, f.Title, f.TargetAmount, ISNULL(SUM(d.Amount), 0) AS TotalCollected
+                FROM Fundraiser f
+                LEFT JOIN Donation d ON f.FundraiserID = d.FundraiserID
+                GROUP BY f.FundraiserID, f.Title, f.TargetAmount
+                ORDER BY f.FundraiserID
+            ";
 
             using (var cmd = _db.GetQuery(query))
             {
@@ -67,25 +73,74 @@ namespace Donation_Website.Pages
                 {
                     while (reader.Read())
                     {
-                        Comments.Add(new Review
+                        decimal collected = reader["TotalCollected"] != DBNull.Value ? Convert.ToDecimal(reader["TotalCollected"]) : 0;
+                        decimal goal = reader["TargetAmount"] != DBNull.Value ? Convert.ToDecimal(reader["TargetAmount"]) : 100000m;
+
+                        Fundraisers.Add(new FundraiserViewModel
                         {
-                            ReviewId = reader["ReviewId"] != DBNull.Value ? Convert.ToInt32(reader["ReviewId"]) : 0,
-                            DonorId = reader["DonorId"] != DBNull.Value ? Convert.ToInt32(reader["DonorId"]) : 0,
-                            ProjectId = reader["ProjectId"] != DBNull.Value ? Convert.ToInt32(reader["ProjectId"]) : 0,
-                            Rating = reader["Rating"] != DBNull.Value ? Convert.ToInt32(reader["Rating"]) : 0,
-                            Comment = reader["Comment"] != DBNull.Value ? reader["Comment"].ToString() : string.Empty,
-                            Date = reader["Date"] != DBNull.Value ? Convert.ToDateTime(reader["Date"]) : DateTime.MinValue,
-                            // This part is crucial for displaying either the donor name or "Anonymous"
-                            User = new User
-                            {
-                                Name = reader["UserName"] != DBNull.Value ? reader["UserName"].ToString() : "Anonymous"
-                            }
+                            FundraiserId = Convert.ToInt32(reader["FundraiserID"]),
+                            Title = reader["Title"].ToString(),
+                            TargetAmount = goal,
+                            StartDate = DateTime.Now, // placeholder
+                            EndDate = DateTime.Now,   // placeholder
+                            IsActive = true,
                         });
+
+                        ViewData[$"Collected_{reader["FundraiserID"]}"] = collected;
+                        ViewData[$"Percentage_{reader["FundraiserID"]}"] = (int)Math.Min(100, Math.Round((collected / goal) * 100));
                     }
                 }
                 cmd.Connection.Close();
             }
+            // ===========================================================================
+
+            // Load Comments for selected fundraiser (if any)
+            LoadComments();
         }
+
+        // ===================== COMMENT METHODS =====================
+        private void LoadComments()
+        {
+            Comments.Clear();
+
+            string commentQuery = @"
+        SELECT r.ReviewId, r.ProjectID, r.Rating, r.Comment, r.Date,
+               d.Name AS DonorName, p.Title AS ProjectTitle
+        FROM Review r
+        LEFT JOIN Donor d ON r.DonorID = d.DonorID
+        LEFT JOIN Project p ON r.ProjectID = p.ProjectID
+        ORDER BY r.Date DESC";
+
+            using (var cmd = _db.GetQuery(commentQuery))
+            {
+                cmd.Connection.Open();
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Comments.Add(new Donation_Website.Models.Review
+                    {
+                        ReviewId = (int)reader["ReviewId"],
+                        ProjectId = (int)reader["ProjectID"],
+                        Rating = (int)reader["Rating"],
+                        Comment = reader["Comment"].ToString(),
+                        Date = (DateTime)reader["Date"],
+                        User = new Donation_Website.Models.User
+                        {
+                            Name = reader["DonorName"] != DBNull.Value && !string.IsNullOrEmpty(reader["DonorName"].ToString())
+                           ? reader["DonorName"].ToString()
+                           : "Anonymous"
+                        },
+                        Project = new Donation_Website.Models.Project { Title = reader["ProjectTitle"].ToString() }
+                    });
+                }
+                cmd.Connection.Close();
+            }
+        }
+
+
+
+
+
 
         public IActionResult OnPostAddComment()
         {
@@ -95,16 +150,9 @@ namespace Donation_Website.Pages
 
                 if (!string.IsNullOrEmpty(CommentName))
                 {
-                    // Normalize the name to avoid whitespace issues
                     CommentName = CommentName.Trim();
+                    if (CommentName.Length > 100) CommentName = CommentName.Substring(0, 100);
 
-                    // Optional: Validate name length (up to 100 chars as per DB)
-                    if (CommentName.Length > 100)
-                    {
-                        CommentName = CommentName.Substring(0, 100);
-                    }
-
-                    // Check if donor exists (case-sensitive; adjust to LOWER if needed for case-insensitivity)
                     string checkDonorQuery = "SELECT TOP 1 DonorID FROM Donor WHERE Name = @Name";
                     using (var cmd = _db.GetQuery(checkDonorQuery))
                     {
@@ -119,17 +167,14 @@ namespace Donation_Website.Pages
                         }
                         else
                         {
-                            // Insert new donor with minimal required fields
                             string insertDonorQuery = @"
                                 INSERT INTO Donor (Name, Email, PasswordHash, CreatedAt, UpdatedAt)
                                 OUTPUT INSERTED.DonorID
                                 VALUES (@Name, @Email, @PasswordHash, GETDATE(), GETDATE())";
 
-                            // Generate a unique placeholder email to avoid UNIQUE constraint violations
                             string sanitizedName = Regex.Replace(CommentName.ToLower(), @"[^a-z0-9]", "_");
                             string placeholderEmail = $"{sanitizedName}_{Guid.NewGuid().ToString("N").Substring(0, 8)}@comment.donation";
-                            // Use a fixed dummy password hash (in production, consider BCrypt or similar for security)
-                            string dummyPasswordHash = "AQAAAAEAACcQAAAAE..."; // Replace with a actual hashed value, e.g., BCrypt.HashPassword("dummy", 10)
+                            string dummyPasswordHash = "AQAAAAEAACcQAAAAE..."; // Replace with actual hash
 
                             using (var donorCmd = _db.GetQuery(insertDonorQuery))
                             {
@@ -143,9 +188,7 @@ namespace Donation_Website.Pages
                         }
                     }
                 }
-                // If no name provided, donorId remains null, which will display as "Anonymous"
 
-                // Insert review with the (possibly new) DonorID
                 string query = @"
                     INSERT INTO Review (DonorID, ProjectID, Rating, Comment, Date)
                     VALUES (@DonorID, @ProjectID, @Rating, @Comment, @Date)";
@@ -153,7 +196,7 @@ namespace Donation_Website.Pages
                 var parameters = new[]
                 {
                     new SqlParameter("@DonorID", donorId != null ? (object)donorId : DBNull.Value),
-                    new SqlParameter("@ProjectID", ProjectId),
+                    new SqlParameter("@ProjectID", SelectedFundraiserId),
                     new SqlParameter("@Rating", Rating),
                     new SqlParameter("@Comment", CommentContent),
                     new SqlParameter("@Date", DateTime.Now)
@@ -168,7 +211,9 @@ namespace Donation_Website.Pages
                 }
             }
 
-            return RedirectToPage();
+            return RedirectToPage(new { SelectedFundraiserId });
         }
+        // ===========================================================================
+
     }
 }

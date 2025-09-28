@@ -24,7 +24,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+// Register your custom services
 builder.Services.AddScoped<DBConnection>();
+builder.Services.AddScoped<Users>(); // Add this line
 
 var app = builder.Build();
 
@@ -40,7 +43,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthorization();
-app.UseSession(); 
+app.UseSession();
 
 app.MapRazorPages();
 

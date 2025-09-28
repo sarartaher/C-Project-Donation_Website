@@ -9,6 +9,8 @@
         public decimal? Amount { get; set; }
         public string SecretName { get; set; }
         public DateTime Date { get; set; }
+
+        // NEW: PaymentId
+        public int PaymentId { get; set; }
     }
 }
-

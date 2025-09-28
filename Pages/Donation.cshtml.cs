@@ -1,10 +1,11 @@
+﻿using Donation_Website.Data;
 using Donation_Website.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using FundraiserModel = Donation_Website.Models.Fundraiser;
 namespace Donation_Website.Pages
 {
     public class DonationModel : PageModel
@@ -17,7 +18,7 @@ namespace Donation_Website.Pages
         [BindProperty] public string DonorName { get; set; }
         [BindProperty] public string DonorEmail { get; set; }
 
-        public List<Fundraiser> Fundraisers { get; set; } = new List<Fundraiser>();
+        public List<FundraiserModel> Fundraisers { get; set; } = new List<FundraiserModel>();
         public int SelectedFundraiserId { get; set; }
         public decimal PrefilledAmount { get; set; } = 100;
 
@@ -30,29 +31,115 @@ namespace Donation_Website.Pages
 
         public IActionResult OnPostAddToCart()
         {
+            // 1️⃣ Get donor ID (anonymous or logged in)
             int donorId = GetDonorId();
+
+
             int cartId = GetOrCreateCart(donorId);
 
+
+            string name;
+            string email;
+
+            if (donorId == 1) // Guest donor
+            {
+                name = "Anonymous";
+                email = "";
+            }
+            else
+            {
+                // Fetch donor info from DB
+                using (var cmd = _db.GetQuery("SELECT Name, Email FROM Donor WHERE DonorID = @DonorId"))
+                {
+                    cmd.Parameters.AddWithValue("@DonorId", donorId);
+                    cmd.Connection.Open();
+                    using var reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        name = reader["Name"]?.ToString() ?? "Anonymous";
+                        email = reader["Email"]?.ToString() ?? "";
+                    }
+                    else
+                    {
+                        name = "Anonymous";
+                        email = "";
+                    }
+                    cmd.Connection.Close();
+                }
+            }
+
+
+            int cartItemId;
             using (var cmd = _db.GetQuery(@"
-                INSERT INTO CartItems (CartId, FundraiserId, Amount, CreatedAt)
-                VALUES (@CartId, @FundraiserId, @Amount, GETDATE())
-            "))
+        INSERT INTO CartItems (CartId, FundraiserId, Amount, CreatedAt)
+        VALUES (@CartId, @FundraiserId, @Amount, GETDATE());
+        SELECT SCOPE_IDENTITY();
+    "))
             {
                 cmd.Parameters.AddWithValue("@CartId", cartId);
                 cmd.Parameters.AddWithValue("@FundraiserId", FundraiserId);
                 cmd.Parameters.AddWithValue("@Amount", Amount);
+
                 cmd.Connection.Open();
-                cmd.ExecuteNonQuery();
+                cartItemId = Convert.ToInt32(cmd.ExecuteScalar());
                 cmd.Connection.Close();
             }
 
-            TempData["Success"] = "Donation added to cart!";
-            return RedirectToPage("/cart");
+
+            string paymentMethod = Request.Form["paymentMethod"];
+            if (string.IsNullOrEmpty(paymentMethod))
+            {
+                paymentMethod = "Mobile"; // default
+            }
+
+
+            int paymentId;
+            using (var paymentCmd = _db.GetQuery(@"
+                            INSERT INTO Payment (
+                                Amount,
+                                PaymentMethod,
+                                PaymentStatus,
+                                Name,
+                                Email,
+                                IsActive,
+                                CreatedAt,
+                                UpdatedAt
+                            )
+                            VALUES (
+                                @Amount,
+                                @PaymentMethod,
+                                'Pending',
+                                @Name,
+                                @Email,
+                                1,
+                                GETDATE(),
+                                GETDATE()
+                            );
+                            SELECT SCOPE_IDENTITY(); 
+"))
+            {
+                paymentCmd.Parameters.AddWithValue("@Amount", Amount);
+                paymentCmd.Parameters.AddWithValue("@PaymentMethod", paymentMethod);
+                paymentCmd.Parameters.AddWithValue("@Name", name);
+                paymentCmd.Parameters.AddWithValue("@Email", email);
+
+                paymentCmd.Connection.Open();
+                paymentId = Convert.ToInt32(paymentCmd.ExecuteScalar()); // <-- now you have PaymentId
+                paymentCmd.Connection.Close();
+            }
+
+            return RedirectToPage("/cart", new { paymentId = paymentId, FundraiserId = FundraiserId, Amount=Amount});
+
+
         }
 
-        private List<Fundraiser> GetFundraisers()
+
+
+
+
+        private List<FundraiserModel> GetFundraisers()
         {
-            var list = new List<Fundraiser>();
+            var list = new List<FundraiserModel>();
             using (var cmd = _db.GetQuery("SELECT FundraiserID, Title FROM Fundraiser"))
             {
                 cmd.Connection.Open();
@@ -60,7 +147,7 @@ namespace Donation_Website.Pages
                 {
                     while (reader.Read())
                     {
-                        list.Add(new Fundraiser
+                        list.Add(new FundraiserModel
                         {
                             FundraiserID = (int)reader["FundraiserID"],
                             Title = reader["Title"].ToString()
@@ -71,6 +158,7 @@ namespace Donation_Website.Pages
             }
             return list;
         }
+
 
         private int GetDonorId()
         {

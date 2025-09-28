@@ -33,16 +33,17 @@
                         var donation = Model.Donations[i];
                         <tr>
                             <td>@(i + 1)</td>
-                            <td>@donation.DonorName</td>
-                            <td>@donation.DonorEmail</td>
+                            <td>@(string.IsNullOrEmpty(donation.DonorName) ? "Anonymous" : donation.DonorName)</td>
+                            <td>@(string.IsNullOrEmpty(donation.DonorEmail) ? "-" : donation.DonorEmail)</td>
                             <td>@donation.Amount.ToString("0.00")</td>
                             <td>@donation.Currency</td>
                             <td>@donation.Status</td>
-                            <td>@donation.PaymentMethod</td>
-                            <td>@donation.PaymentStatus</td>
-                            <td>@donation.Gateway</td>
+                            <td>@(string.IsNullOrEmpty(donation.PaymentMethod) ? "-" : donation.PaymentMethod)</td>
+                            <td>@(string.IsNullOrEmpty(donation.PaymentStatus) ? "Pending" : donation.PaymentStatus)</td>
+                            <td>@(string.IsNullOrEmpty(donation.Gateway) ? "-" : donation.Gateway)</td>
                             <td>@donation.Date.ToString("yyyy-MM-dd HH:mm")</td>
                             <td>@(donation.TransactionDate == DateTime.MinValue ? "-" : donation.TransactionDate.ToString("yyyy-MM-dd HH:mm"))</td>
+                            <td>@(string.IsNullOrEmpty(donation.PaymentStatus) ? donation.Status : donation.PaymentStatus)</td>
                         </tr>
                     }
                 </tbody>

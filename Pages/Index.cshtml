@@ -2,6 +2,8 @@
 @model Donation_Website.Pages.IndexModel
 @{
     ViewData["Title"] = "Home";
+    string selectedAttr(int id) => id == Model.SelectedFundraiserId ? "selected" : "";
+
 }
 
 <section class="d-flex flex-wrap justify-content-between align-items-center p-5 text-white hero-home gap-4">
@@ -19,26 +21,47 @@
     </div>
 </section>
 
-<section class="p-5 text-center bg-light">
-    <div class="container">
-        <h2 class="mb-4 fw-bold">Live Fund Monitor</h2>
+<div id="fundraiserCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="2000">
+    <div class="carousel-inner">
+        @for (int i = 0; i < Model.Fundraisers.Count; i++)
+        {
+            var f = Model.Fundraisers[i];
+            var totalCollected = ViewData[$"Collected_{f.FundraiserId}"] != null ? (decimal)ViewData[$"Collected_{f.FundraiserId}"] : 0m;
+            var percentage = ViewData[$"Percentage_{f.FundraiserId}"] != null ? (int)ViewData[$"Percentage_{f.FundraiserId}"] : 0;
 
-        <div class="progress progress-lg rounded-pill mx-auto" style="height: 30px; max-width: 600px;">
-            <div class="progress-bar progress-bar-striped bg-success progress-bar-animated rounded-pill"
-                 role="progressbar"
-                 style="width:@Model.Percentage%;"
-                 aria-valuenow="@Model.Percentage"
-                 aria-valuemin="0"
-                 aria-valuemax="100">
-                @Model.Percentage%
+            <div class="carousel-item @(i == 0 ? "active" : "")">
+                <div class="card p-4 shadow-lg mx-auto" style="max-width: 600px;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold">@f.Title</h5>
+                        <div class="progress progress-lg rounded-pill mx-auto my-3" style="height: 30px;">
+                            <div class="progress-bar progress-bar-striped bg-success progress-bar-animated rounded-pill"
+                                 role="progressbar"
+                                 style="width:@percentage%;"
+                                 aria-valuenow="@percentage"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                @percentage%
+                            </div>
+                        </div>
+                        <p class="fs-6">
+                            Collected: <strong>৳@totalCollected</strong> of ৳@f.TargetAmount
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <p class="mt-3 fs-5">
-            Collected: <strong>৳@Model.TotalCollected</strong> of ৳100,000
-        </p>
+        }
     </div>
-</section>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#fundraiserCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#fundraiserCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</div>
+
+
+
 
 <section class="p-5 bg-light text-center position-relative">
     <div class="container">
@@ -167,10 +190,33 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form method="post" asp-page-handler="AddComment">
+                    <!-- Fundraiser Dropdown -->
+                    <div class="mb-3">
+                        <label for="commentFundraiser" class="form-label">Select Project / Event</label>
+                        <select class="form-control" id="commentFundraiser" name="SelectedFundraiserId" required>
+                            <option value="">-- Select Event --</option>
+                            @foreach (var f in Model.Fundraisers)
+                            {
+                                if (f.FundraiserId == Model.SelectedFundraiserId)
+                                {
+                                    <option value="@f.FundraiserId" selected="selected">@f.Title</option>
+                                }
+                                else
+                                {
+                                    <option value="@f.FundraiserId">@f.Title</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+
+                    <!-- Name -->
                     <div class="mb-3">
                         <label for="commentName" class="form-label">Name</label>
                         <input type="text" class="form-control" id="commentName" name="CommentName" placeholder="Your Name">
                     </div>
+
+                    <!-- Rating -->
                     <div class="mb-3">
                         <label for="commentRating" class="form-label">Rating</label>
                         <select class="form-control" id="commentRating" name="Rating" required>
@@ -181,25 +227,29 @@
                             <option value="5">5</option>
                         </select>
                     </div>
+
+                    <!-- Comment Content -->
                     <div class="mb-3">
                         <label for="commentContent" class="form-label">Comment</label>
                         <textarea class="form-control" id="commentContent" name="CommentContent" rows="3" placeholder="Your Comment" required></textarea>
                     </div>
-                    <input type="hidden" name="ProjectId" value="1" />
+
                     <button type="submit" class="btn btn-primary">Post Comment</button>
                 </form>
             </div>
         </div>
 
+        <!-- Display Comments -->
         <div class="comments-list">
             @foreach (var comment in Model.Comments)
             {
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="card-title mb-0">@comment.User?.Name</h5>
+                            <h5 class="card-title mb-0">@comment.UserName</h5>
                             <small class="text-muted">@comment.Date.ToString("MMMM dd, yyyy")</small>
                         </div>
+
                         <div class="mb-2">
                             @for (int i = 1; i <= 5; i++)
                             {
@@ -213,13 +263,19 @@
                                 }
                             }
                         </div>
+
+                        <p><strong>Event:</strong> @comment.ProjectTitle</p> 
+
                         <p class="card-text">@comment.Comment</p>
                     </div>
                 </div>
             }
         </div>
+
     </div>
 </section>
+
+
 <script>
     setInterval(function(){
         location.reload();

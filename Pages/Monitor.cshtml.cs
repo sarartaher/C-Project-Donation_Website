@@ -16,22 +16,25 @@ namespace Donation_Website.Pages
             // use your helper to create the command & connection
             using var cmd = db.GetQuery(@"
                 SELECT dn.DonationID,
-                       dn.Amount,
-                       dn.Currency,
-                       dn.Status,
-                       dn.Date,
-                       p.Name,
-                       p.Email,
-                       p.PaymentMethod,
-                       p.PaymentStatus,
-                       p.Gateway,
-                       p.TransactionDate,
-                       d.Name  AS DonorName,
-                       d.Email AS DonorEmail
-                FROM Donation dn
-                INNER JOIN Payment p ON dn.DonationID = p.DonationID
-                INNER JOIN Donor   d ON dn.DonorID    = d.DonorID
-                ORDER BY dn.Date DESC");
+                           dn.Amount,
+                           dn.Currency,
+                           dn.Status AS DonationStatus,
+                           dn.Date,
+                           p.Name,
+                           p.Email,
+                           p.PaymentMethod,
+                           p.PaymentStatus,
+                           p.Gateway,
+                           p.TransactionDate,
+                           d.Name AS DonorName,
+                           d.Email AS DonorEmail
+                    FROM Donation dn
+                    LEFT JOIN Payment p ON dn.DonationID = p.DonationID
+                    LEFT JOIN Donor d ON dn.DonorID = d.DonorID
+                    ORDER BY dn.Date DESC
+
+                                    ");
+
 
             // open the connection that belongs to the command
             cmd.Connection.Open();
@@ -44,7 +47,7 @@ namespace Donation_Website.Pages
                     DonationID = reader.GetInt32(reader.GetOrdinal("DonationID")),
                     Amount = reader.GetDecimal(reader.GetOrdinal("Amount")),
                     Currency = reader["Currency"]?.ToString() ?? "",
-                    Status = reader["Status"]?.ToString() ?? "",
+                    Status = reader["DonationStatus"]?.ToString() ?? "",
                     Date = reader.GetDateTime(reader.GetOrdinal("Date")),
                     Name = reader["Name"]?.ToString() ?? "",
                     Email = reader["Email"]?.ToString() ?? "",

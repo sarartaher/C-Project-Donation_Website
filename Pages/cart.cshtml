@@ -17,7 +17,7 @@
                             <i class="fas fa-plus"></i> Add More Donation
                         </a>
                     </div>
-                    <div class="card-body" id="donationList">
+                    <div class="card-body" id="donationListA">
                         @if (Model.Donations?.Count > 0)
                         {
                             @foreach (var donation in Model.Donations)
@@ -78,6 +78,9 @@
 
                         <!-- Payment Methods -->
                         <form method="post" asp-page-handler="Checkout">
+                            <input type="hidden" asp-for="APaymentId" />
+                            <input type="hidden" asp-for="FundraiserId" />
+                            <input type="hidden" asp-for="Amount"/>
                             <h6 class="mb-3">Payment Method</h6>
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="radio" name="paymentMethod" id="mobilePay" value="Mobile" checked />

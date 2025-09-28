@@ -1,4 +1,5 @@
-﻿using Donation_Website.Models;
+﻿using Donation_Website.Data;
+using Donation_Website.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static iTextSharp.text.pdf.AcroFields;
 
 namespace Donation_Website.Pages
 {
@@ -19,7 +21,12 @@ namespace Donation_Website.Pages
         public List<DonationViewModel> Donations { get; set; } = new List<DonationViewModel>();
         public decimal SubTotal { get; set; }
         public decimal TotalAmount { get; set; }
-
+        [BindProperty]
+        public int APaymentId { get; set; }
+        [BindProperty]
+        public int FundraiserId { get; set; }
+        [BindProperty]
+        public decimal Amount { get; set; }
         public void LoadCart()
         {
             Donations.Clear();
@@ -28,11 +35,11 @@ namespace Donation_Website.Pages
             string query = @"
                 SELECT ci.CartItemsId, ci.CartId, ci.Amount,
                        f.FundraiserID, f.Title AS EventName, ci.CreatedAt
-                FROM CartItems ci
-                INNER JOIN Cart c ON ci.CartId = c.CartID
-                INNER JOIN Fundraiser f ON ci.FundraiserId = f.FundraiserID
-                WHERE c.DonorID = @DonorID AND (c.Status IS NULL OR c.Status = 'Pending')
-                ORDER BY ci.CreatedAt DESC
+                        FROM CartItems ci
+                        INNER JOIN Cart c ON ci.CartId = c.CartID
+                        INNER JOIN Fundraiser f ON ci.FundraiserId = f.FundraiserID
+                        WHERE c.DonorID = @DonorID AND (c.Status IS NULL OR c.Status = 'Pending')
+                        ORDER BY ci.CreatedAt DESC
             ";
 
             using (SqlCommand cmd = _db.GetQuery(query))
@@ -123,6 +130,166 @@ namespace Donation_Website.Pages
 
             return guestId;
         }
+        private int GetOrCreateCart(int donorId)
+        {
+            int cartId = 0;
+
+            // Check for existing pending cart
+            using (var cmd = _db.GetQuery("SELECT CartID FROM Cart WHERE DonorID = @DonorID AND (Status IS NULL OR Status = 'Pending')"))
+            {
+                cmd.Parameters.AddWithValue("@DonorID", donorId);
+                cmd.Connection.Open();
+                var result = cmd.ExecuteScalar();
+                cmd.Connection.Close();
+
+                if (result != null)
+                {
+                    return Convert.ToInt32(result); // Return existing pending cart
+                }
+            }
+
+            // Create a new cart if none exists
+            using (var cmd = _db.GetQuery(@"
+        INSERT INTO Cart (DonorID, Status, CreatedAt)
+        OUTPUT INSERTED.CartID
+        VALUES (@DonorID, 'Pending', GETDATE())
+    "))
+            {
+                cmd.Parameters.AddWithValue("@DonorID", donorId);
+                cmd.Connection.Open();
+                cartId = Convert.ToInt32(cmd.ExecuteScalar());
+                cmd.Connection.Close();
+            }
+
+            return cartId;
+        }
+
+        public IActionResult OnPostCheckout()
+        {
+            try
+            {
+                // 1️⃣ Get donor ID
+                int donorId = GetDonorId();
+
+                // 2️⃣ Get or create cart
+                int cartId = GetOrCreateCart(donorId);
+
+                // 3️⃣ Get donor info
+                string name = "Anonymous";
+                string email = "";
+
+                if (donorId != 1) // Not a guest
+                {
+                    using (var cmd = _db.GetQuery("SELECT Name, Email FROM Donor WHERE DonorID = @DonorId"))
+                    {
+                        cmd.Parameters.AddWithValue("@DonorId", donorId);
+                        cmd.Connection.Open();
+                        using var reader = cmd.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            name = reader["Name"]?.ToString() ?? "Anonymous";
+                            email = reader["Email"]?.ToString() ?? "";
+                        }
+                        cmd.Connection.Close();
+                    }
+                }
+
+                // 4️⃣ Get payment method from form
+                string paymentMethod = Request.Form["paymentMethod"];
+                if (string.IsNullOrEmpty(paymentMethod))
+                    paymentMethod = "Mobile";
+
+                // 5️⃣ Load cart items with PaymentId
+                LoadCart();
+
+                foreach (var item in Donations)
+                {
+                    // 6️⃣ Update Payment status to Completed if PaymentId exists
+                    if (APaymentId != null)
+                    {
+                        using (var updatePaymentCmd = _db.GetQuery(@"
+                    UPDATE Payment
+                    SET PaymentStatus = 'Completed',
+                        PaymentMethod = @PaymentMethod,
+                        UpdatedAt = GETDATE()
+                    WHERE PaymentId = @PaymentId
+                "))
+                        {
+                            updatePaymentCmd.Parameters.AddWithValue("@PaymentMethod", paymentMethod);
+                            updatePaymentCmd.Parameters.AddWithValue("@PaymentId", APaymentId);
+                            Console.WriteLine(APaymentId + "If");
+
+                            updatePaymentCmd.Connection.Open();
+                            updatePaymentCmd.ExecuteNonQuery();
+                            updatePaymentCmd.Connection.Close();
+                        }
+                    }
+ 
+                          
+
+                    if(FundraiserId != null)
+                    {
+                        using (var donationCmd = _db.GetQuery(@"
+                                    INSERT INTO Donation (                                    
+                                        CartID,
+                                        FundraiserID,
+                                        Amount,
+                                        Currency,
+                                        Status,
+                                        [Date],
+                                        DonorID
+                                    )
+                                    VALUES (
+                                       
+                                        @CartID,
+                                        @FundraiserID,
+                                        @Amount,
+                                        'BDT',
+                                        'Completed',
+                                        GETDATE(),
+                                         @DonorID
+                                                    )
+                                                "))
+                        {
+                            Console.WriteLine("Dona1");
+                            donationCmd.Parameters.AddWithValue("@DonorID", donorId);
+                            donationCmd.Parameters.AddWithValue("@CartID", cartId);
+                            donationCmd.Parameters.AddWithValue("@FundraiserID", FundraiserId);
+                            Console.WriteLine(FundraiserId);
+                            donationCmd.Parameters.AddWithValue("@Amount", Amount);
+                            Console.WriteLine("Dona2");
+                            Console.WriteLine("Dona3");
+                            try
+                            {
+                                donationCmd.Connection.Open();
+                                donationCmd.ExecuteNonQuery();
+                                Console.WriteLine("Dona4");
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Donation Insert Error: " + ex.Message);
+                            }
+                            finally
+                            {
+                                donationCmd.Connection.Close();
+                            }
+                        }
+                    }
+
+                }
+
+
+                    TempData["Success"] = "Donation completed and payments updated successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error processing donation: {ex.Message}";
+            }
+
+            return RedirectToPage("/cart");
+        }
+    
+
 
         public IActionResult OnPostRemove(int cartItemsId)
         {
@@ -144,8 +311,10 @@ namespace Donation_Website.Pages
             return RedirectToPage();
         }
 
-        public void OnGet()
+        public void OnGet(int? paymentId = null, int? FundraiserId = null, decimal? Amount = null)
         {
+            APaymentId = paymentId ?? 0;
+            Console.WriteLine(APaymentId + "Load");
             LoadCart();
         }
 
