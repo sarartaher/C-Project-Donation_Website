@@ -41,14 +41,15 @@ namespace Donation_Website.Pages
             string name;
             string email;
 
-            if (donorId == 1) // Guest donor
+            if (User.Identity?.IsAuthenticated != true)
             {
+                // Not logged in → anonymous
                 name = "Anonymous";
                 email = "";
             }
             else
             {
-                // Fetch donor info from DB
+                // Logged in → pull from Donor table
                 using (var cmd = _db.GetQuery("SELECT Name, Email FROM Donor WHERE DonorID = @DonorId"))
                 {
                     cmd.Parameters.AddWithValue("@DonorId", donorId);
@@ -64,7 +65,6 @@ namespace Donation_Website.Pages
                         name = "Anonymous";
                         email = "";
                     }
-                    cmd.Connection.Close();
                 }
             }
 
@@ -134,9 +134,6 @@ namespace Donation_Website.Pages
         }
 
 
-
-
-
         private List<FundraiserModel> GetFundraisers()
         {
             var list = new List<FundraiserModel>();
@@ -162,18 +159,18 @@ namespace Donation_Website.Pages
 
         private int GetDonorId()
         {
-            int donorId = 0;
             if (User.Identity?.IsAuthenticated == true)
             {
                 string email = User.Identity.Name;
                 var (user, userType) = _users.SearchUser(email);
-                donorId = (userType == "Donor" && user != null) ? (user as Donor).DonorID : CreateGuestDonor();
+                if (userType == "Donor" && user is Donor donor)
+                {
+                    return donor.DonorID;
+                }
             }
-            else
-            {
-                donorId = CreateGuestDonor();
-            }
-            return donorId;
+
+            // not logged in or not a donor → create/return guest id
+            return CreateGuestDonor();
         }
 
         private int CreateGuestDonor()

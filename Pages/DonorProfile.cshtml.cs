@@ -1,54 +1,85 @@
+using Donation_Website.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
 using System;
+
 namespace Donation_Website.Pages
 {
     public class DonorProfileModel : PageModel
     {
         private readonly DBConnection _db = new DBConnection();
-        [BindProperty] public int DonorID { get; set; }
-        [BindProperty] public string Name { get; set; }
-        [BindProperty] public string Email { get; set; }
-        [BindProperty] public string Phone { get; set; }
-        [BindProperty] public string Address { get; set; }
-        public string CreatedAt { get; set; }
-        public void OnGet(int id = 1)
+
+        [BindProperty]
+        public Donor CurrentDonor { get; set; } = new Donor();
+
+        [TempData]
+        public string SuccessMessage { get; set; }
+
+        public IActionResult OnGet()
         {
-            using var cmd = _db.GetQuery("SELECT * FROM Donor WHERE DonorID=@DonorID");
-            cmd.Parameters.AddWithValue("@DonorID", id);
-            cmd.Connection.Open();
-            using var reader = cmd.ExecuteReader();
-            if (reader.Read())
+            string email = HttpContext.Session.GetString("UserEmail");
+            if (string.IsNullOrEmpty(email))
             {
-                DonorID = (int)reader["DonorID"];
-                Name = reader["Name"].ToString();
-                Email = reader["Email"].ToString();
-                Phone = reader["Phone"].ToString();
-                Address = reader["Address"].ToString();
-                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
-                .ToString("MMMM dd, yyyy");
+                return RedirectToPage("/Login");
             }
-            cmd.Connection.Close();
+
+            LoadDonor(email);
+            return Page();
         }
-        public IActionResult OnPost()
+
+        public IActionResult OnPostUpdate()
         {
-            using var cmd = _db.GetQuery(@"
- UPDATE Donor
- SET Name=@Name, Email=@Email, Phone=@Phone, Address=@Address,
-UpdatedAt=GETDATE()
- WHERE DonorID=@DonorID");
-            cmd.Parameters.AddWithValue("@Name", Name);
-            cmd.Parameters.AddWithValue("@Email", Email);
-            cmd.Parameters.AddWithValue("@Phone", (object)Phone ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@Address", (object)Address ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@DonorID", DonorID);
-            cmd.Connection.Open();
-            int rows = cmd.ExecuteNonQuery();
-            cmd.Connection.Close();
-            if (rows > 0)
-                TempData["SuccessMessage"] = "Profile updated successfully!";
-            return RedirectToPage(new { id = DonorID });
+            string email = HttpContext.Session.GetString("UserEmail");
+            if (string.IsNullOrEmpty(email))
+            {
+                return RedirectToPage("/Login");
+            }
+
+            using (var cmd = _db.GetQuery(@"
+                UPDATE Donor
+                SET Name=@Name, Phone=@Phone, Address=@Address, UpdatedAt=GETDATE()
+                WHERE Email=@Email
+            "))
+            {
+                cmd.Parameters.AddWithValue("@Name", CurrentDonor.Name ?? "");
+                cmd.Parameters.AddWithValue("@Phone", CurrentDonor.Phone ?? "");
+                cmd.Parameters.AddWithValue("@Address", CurrentDonor.Address ?? "");
+                cmd.Parameters.AddWithValue("@Email", email);
+
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+            }
+
+            SuccessMessage = "Profile updated successfully!";
+            LoadDonor(email); // Reload updated info
+            return Page();
+        }
+
+        private void LoadDonor(string email)
+        {
+            using (var cmd = _db.GetQuery("SELECT DonorID, Name, Email, Phone, Address, CreatedAt FROM Donor WHERE Email=@Email"))
+            {
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Connection.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        CurrentDonor.DonorID = reader.GetInt32(reader.GetOrdinal("DonorID"));
+                        CurrentDonor.Name = reader.GetString(reader.GetOrdinal("Name"));
+                        CurrentDonor.Email = reader.GetString(reader.GetOrdinal("Email"));
+                        CurrentDonor.Phone = reader["Phone"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("Phone")) : "";
+                        CurrentDonor.Address = reader["Address"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("Address")) : "";
+                        CurrentDonor.CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"));
+                    }
+                }
+
+                cmd.Connection.Close();
+            }
         }
     }
 }
+

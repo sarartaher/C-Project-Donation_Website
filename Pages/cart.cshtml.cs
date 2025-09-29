@@ -31,16 +31,32 @@ namespace Donation_Website.Pages
         {
             Donations.Clear();
             int donorId = GetDonorId();
+            string donorName="Anonymous";
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                using (var nameCmd = _db.GetQuery("SELECT Name FROM Donor WHERE Email=@Email"))
+                {
+                    nameCmd.Parameters.AddWithValue("@Email", User.Identity.Name);
+                    nameCmd.Connection.Open();
+                    var result = nameCmd.ExecuteScalar();
+                    nameCmd.Connection.Close();
+                    donorName = result != null ? result.ToString() : "Anonymous";
+                }
+            }
+
+
+
+
 
             string query = @"
-                SELECT ci.CartItemsId, ci.CartId, ci.Amount,
-                       f.FundraiserID, f.Title AS EventName, ci.CreatedAt
-                        FROM CartItems ci
-                        INNER JOIN Cart c ON ci.CartId = c.CartID
-                        INNER JOIN Fundraiser f ON ci.FundraiserId = f.FundraiserID
-                        WHERE c.DonorID = @DonorID AND (c.Status IS NULL OR c.Status = 'Pending')
-                        ORDER BY ci.CreatedAt DESC
-            ";
+        SELECT ci.CartItemsId, ci.CartId, ci.Amount,
+               f.FundraiserID, f.Title AS EventName, ci.CreatedAt
+                FROM CartItems ci
+                INNER JOIN Cart c ON ci.CartId = c.CartID
+                INNER JOIN Fundraiser f ON ci.FundraiserId = f.FundraiserID
+                WHERE c.DonorID = @DonorID AND (c.Status IS NULL OR c.Status = 'Pending')
+                ORDER BY ci.CreatedAt DESC
+    ";
 
             using (SqlCommand cmd = _db.GetQuery(query))
             {
@@ -57,10 +73,11 @@ namespace Donation_Website.Pages
                             FundraiserId = reader.GetInt32(reader.GetOrdinal("FundraiserID")),
                             EventName = reader.GetString(reader.GetOrdinal("EventName")),
                             Amount = reader.IsDBNull(reader.GetOrdinal("Amount")) ? 0m : reader.GetDecimal(reader.GetOrdinal("Amount")),
-                            SecretName = "Anonymous",
+                            SecretName = donorName,
                             Date = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                         });
                     }
+
                 }
                 cmd.Connection.Close();
             }
@@ -69,21 +86,28 @@ namespace Donation_Website.Pages
             TotalAmount = SubTotal;
         }
 
+
         private int GetDonorId()
         {
-            int donorId = 0;
             if (User.Identity?.IsAuthenticated == true)
             {
-                string email = User.Identity.Name;
-                var (user, userType) = _users.SearchUser(email);
-                donorId = (userType == "Donor" && user != null) ? (user as Donor).DonorID : CreateGuestDonor();
+                string email = User.Identity.Name; // this should be the donor's email
+                using (var cmd = _db.GetQuery("SELECT DonorID FROM Donor WHERE Email=@Email"))
+                {
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.Connection.Open();
+                    var result = cmd.ExecuteScalar();
+                    cmd.Connection.Close();
+
+                    if (result != null)
+                        return (int)result; // correct logged-in donor
+                }
             }
-            else
-            {
-                donorId = CreateGuestDonor();
-            }
-            return donorId;
+
+            // fallback to guest donor
+            return CreateGuestDonor();
         }
+
 
         private int CreateGuestDonor()
         {
@@ -116,9 +140,9 @@ namespace Donation_Website.Pages
             string dummyPassword = "GUEST";
 
             using (var cmd = _db.GetQuery(@"
-        INSERT INTO Donor (Name, Email, PasswordHash, CreatedAt)
-        OUTPUT INSERTED.DonorID
-        VALUES ('Guest', @Email, @PasswordHash, GETDATE())
+            INSERT INTO Donor (Name, Email, PasswordHash, CreatedAt)
+            OUTPUT INSERTED.DonorID
+            VALUES ('Guest', @Email, @PasswordHash, GETDATE())
     "))
             {
                 cmd.Parameters.AddWithValue("@Email", guestEmail);
@@ -150,9 +174,9 @@ namespace Donation_Website.Pages
 
             // Create a new cart if none exists
             using (var cmd = _db.GetQuery(@"
-        INSERT INTO Cart (DonorID, Status, CreatedAt)
-        OUTPUT INSERTED.CartID
-        VALUES (@DonorID, 'Pending', GETDATE())
+            INSERT INTO Cart (DonorID, Status, CreatedAt)
+            OUTPUT INSERTED.CartID
+            VALUES (@DonorID, 'Pending', GETDATE())
     "))
             {
                 cmd.Parameters.AddWithValue("@DonorID", donorId);
@@ -255,15 +279,11 @@ namespace Donation_Website.Pages
                             donationCmd.Parameters.AddWithValue("@DonorID", donorId);
                             donationCmd.Parameters.AddWithValue("@CartID", cartId);
                             donationCmd.Parameters.AddWithValue("@FundraiserID", FundraiserId);
-                            Console.WriteLine(FundraiserId);
                             donationCmd.Parameters.AddWithValue("@Amount", Amount);
-                            Console.WriteLine("Dona2");
-                            Console.WriteLine("Dona3");
                             try
                             {
                                 donationCmd.Connection.Open();
                                 donationCmd.ExecuteNonQuery();
-                                Console.WriteLine("Dona4");
                             }
                             catch (Exception ex)
                             {
@@ -294,6 +314,7 @@ namespace Donation_Website.Pages
         public IActionResult OnPostRemove(int cartItemsId)
         {
             int donorId = GetDonorId();
+
             using (var cmd = _db.GetQuery(@"
                 DELETE FROM CartItems 
                 WHERE CartItemsId = @CartItemsId 
@@ -325,7 +346,7 @@ namespace Donation_Website.Pages
 
             var items = Donations.Where(d => d.CartId == cartId).ToList();
             if (!items.Any())
-                items = Donations; // fallback if no items found
+                items = Donations; 
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -352,7 +373,24 @@ namespace Donation_Website.Pages
                 doc.Add(date);
 
                 // Donor Name
-                string donorName = Donations.FirstOrDefault()?.SecretName ?? "Guest";
+                int donorId = GetDonorId();
+                string donorName;
+
+                if (User.Identity?.IsAuthenticated == true)
+                {
+                    using (var cmd = _db.GetQuery("SELECT Name FROM Donor WHERE DonorID=@DonorId"))
+                    {
+                        cmd.Parameters.AddWithValue("@DonorId", donorId);
+                        cmd.Connection.Open();
+                        donorName = cmd.ExecuteScalar()?.ToString() ?? "Anonymous";
+                        cmd.Connection.Close();
+                    }
+                }
+                else
+                {
+                    donorName = "Anonymous";
+                }
+
                 Paragraph donor = new Paragraph($"Donor Name: {donorName}", dateFont)
                 {
                     Alignment = Element.ALIGN_LEFT,
