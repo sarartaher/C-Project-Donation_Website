@@ -1,0 +1,174 @@
+﻿@page
+@model Donation_Website.Pages.AvailableProjectsModel
+@{
+    ViewData["Title"] = "Available Projects";
+}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h1 class="display-4 fw-bold">Available Projects</h1>
+            <p class="lead text-muted">Explore the projects below and apply to volunteer.</p>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <form asp-page="./AvailableProjects" method="get" class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search by title or description" aria-label="Search" name="SearchString" value="@Model.SearchString">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            @if (Model.Projects.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                @* <th scope="col">Project ID</th> *@
+                                <th scope="col">Project Title</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Start Date</th>
+                                <th scope="col">End Date</th>
+                                <th scope="col" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var project in Model.Projects)
+                            {
+                                <tr id="row-@project.ProjectId">
+                                    @* <td>
+                                        <strong>@project.ProjectId</strong>
+                                    </td> *@
+                                    <td>
+                                        <strong>@project.Title</strong>
+                                    </td>
+                                    <td>@project.Description</td>
+                                    <td>@project.StartDate.ToShortDateString()</td>
+                                    <td>@project.EndDate.ToShortDateString()</td>
+                                    <td class="text-center">
+                                        @if (project.IsApplied)
+                                        {
+                                            <button class="btn btn-secondary" disabled>Applied</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-success apply-btn"
+                                                    data-project="@project.ProjectId"
+                                                    id="apply-@project.ProjectId">
+                                                Apply
+                                            </button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center" role="alert">
+                    No available projects at the moment. Please check back later.
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Add Anti-Forgery Token -->
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.apply-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const projectId = this.getAttribute('data-project');
+                const button = this;
+
+                // Show loading state
+                const originalText = button.textContent;
+                button.textContent = 'Applying...';
+                button.disabled = true;
+
+                // Create FormData for proper form submission
+                const formData = new FormData();
+                formData.append('projectId', projectId);
+
+                // Get anti-forgery token
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                fetch('@Url.Page("AvailableProjects", "Apply")', {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(HTTP error! status: ${response.status});
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Success state
+                        button.textContent = 'Applied ✓';
+                        button.classList.remove('btn-success');
+                        button.classList.add('btn-secondary');
+
+                        // Show success message
+                        showMessage('success', data.message || 'Application submitted successfully!');
+                    } else {
+                        // Error state - re-enable button
+                        button.textContent = originalText;
+                        button.disabled = false;
+
+                        // Show error message
+                        showMessage('error', data.message || 'Failed to submit application');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+
+                    // Error state - re-enable button
+                    button.textContent = originalText;
+                    button.disabled = false;
+
+                    // Show error message
+                    showMessage('error', 'An unexpected error occurred. Please try again.');
+                });
+            });
+        });
+
+        // Helper function to show messages
+        function showMessage(type, message) {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.alert-message');
+            existingMessages.forEach(msg => msg.remove());
+
+            // Create new message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show alert-message;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+
+            // Insert at the top of the container
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+
+            // Auto-remove success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            }
+        }
+    </script>
+}

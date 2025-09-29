@@ -3,6 +3,7 @@
 @using Donation_Website.Models
 @{
     ViewData["Title"] = "Cart";
+    var userName = Model.HttpContext.Session.GetString("UserName");
 }
 
 <section class="h-100">

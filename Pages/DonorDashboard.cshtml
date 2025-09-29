@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Donor Dashboard";
     var userName = Model.HttpContext.Session.GetString("UserName");
-    // Example events - replace with backend data
     var events = new List<dynamic>
  {
  new { Name = "Education Fundraiser", EndTime = DateTime.Now.AddHours(5),

@@ -13,6 +13,7 @@
         <input type="text" id="searchInput" class="form-control" placeholder="Search by Name" onkeyup="filterTable()">
     </div>
 
+    <h3 class="mt-5 mb-3">Verified Volunteers</h3>
     <table class="table table-bordered table-hover text-center" id="volunteerTable">
         <thead class="table-dark">
             <tr>
@@ -40,6 +41,40 @@
             }
         </tbody>
     </table>
+
+    <h3 class="mt-5 mb-3">Pending Applications</h3>
+    @if (Model.PendingApplications.Any())
+    {
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Volunteer Name</th>
+                    <th>Project Title</th>
+                    <th>Application Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var app in Model.PendingApplications)
+                {
+                    <tr>
+                        <td>@app.VolunteerName</td>
+                        <td>@app.ProjectTitle</td>
+                        <td>@app.ApplicationDate.ToShortDateString()</td>
+                        <td>
+                            <form method="post" asp-page-handler="Accept" asp-route-volunteerId="@app.VolunteerID" asp-route-projectId="@app.ProjectID">
+                                <button type="submit" class="btn btn-success">Accept</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No pending applications.</p>
+    }
 </section>
 
 <script>

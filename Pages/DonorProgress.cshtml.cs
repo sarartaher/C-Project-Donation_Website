@@ -1,61 +1,76 @@
-using Donation_Website;
+using Donation_Website.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Collections.Generic;
+using Donation_Website.Models;
 
 namespace Donation_Website.Pages
 {
     public class DonorProgressModel : PageModel
     {
-        private readonly DBConnection _db;
-
-        public DonorProgressModel(DBConnection db)
-        {
-            _db = db;
-        }
+        private readonly DBConnection _db = new DBConnection();
 
         public decimal TotalDonation { get; set; }
-        public string RewardLevel { get; set; }
+        public string CurrentLevel { get; set; } = "None";
+
+        public List<DonorLevel> Levels { get; set; } = new List<DonorLevel>
+        {
+            new DonorLevel("Silver", 2000, "#C0C0C0", "fas fa-medal"),
+            new DonorLevel("Gold", 8000, "#FFD700", "fas fa-award"),
+            new DonorLevel("Platinum", 15000, "#708090", "fas fa-gem"),
+            new DonorLevel("Diamond", 30000, "#1E90FF", "fas fa-diamond"),
+            new DonorLevel("Emerald", 60000, "#228B22", "fas fa-leaf"),
+            new DonorLevel("Ruby", 120000, "#B22222", "fas fa-heart"),
+            new DonorLevel("Crown", 200000, "#8B4513", "fas fa-crown")
+        };
 
         public void OnGet()
         {
-            int donorId = Convert.ToInt32(HttpContext.Session.GetString("DonorID"));
-            TotalDonation = GetTotalDonation(donorId);
-            RewardLevel = GetRewardLevel(TotalDonation);
+            int donorId = GetDonorId();
+            LoadTotalDonation(donorId);
+            DetermineCurrentLevel();
         }
 
-        private decimal GetTotalDonation(int donorId)
+        private int GetDonorId()
         {
-            decimal total = 0;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                string email = User.Identity.Name;
+                using (var cmd = _db.GetQuery("SELECT DonorID FROM Donor WHERE Email=@Email"))
+                {
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.Connection.Open();
+                    var result = cmd.ExecuteScalar();
+                    cmd.Connection.Close();
+                    if (result != null) return (int)result;
+                }
+            }
+            return 0; // fallback
+        }
 
-            string query = @"
-                SELECT ISNULL(SUM(Amount), 0)
-                FROM Donation
-                WHERE DonorID = @DonorID AND Status = 'Completed'";
-
-            using (SqlCommand cmd = _db.GetQuery(query))
+        private void LoadTotalDonation(int donorId)
+        {
+            using (var cmd = _db.GetQuery("SELECT ISNULL(SUM(Amount),0) FROM Donation WHERE DonorID=@DonorID AND Status='Completed'"))
             {
                 cmd.Parameters.AddWithValue("@DonorID", donorId);
                 cmd.Connection.Open();
-                object result = cmd.ExecuteScalar();
-                if (result != DBNull.Value)
-                    total = Convert.ToDecimal(result);
+                TotalDonation = Convert.ToDecimal(cmd.ExecuteScalar());
                 cmd.Connection.Close();
             }
-
-            return total;
         }
 
-        private string GetRewardLevel(decimal totalDonation)
+        private void DetermineCurrentLevel()
         {
-            if (totalDonation >= 200000) return "Crown";
-            if (totalDonation >= 120000) return "Ruby";
-            if (totalDonation >= 60000) return "Emerald";
-            if (totalDonation >= 30000) return "Diamond";
-            if (totalDonation >= 15000) return "Platinum";
-            if (totalDonation >= 8000) return "Gold";
-            if (totalDonation >= 2000) return "Silver";
-            return "No Reward Yet";
+            foreach (var level in Levels)
+            {
+                if (TotalDonation >= level.Threshold)
+                {
+                    CurrentLevel = level.Name;
+                }
+            }
         }
+
     }
 }
+

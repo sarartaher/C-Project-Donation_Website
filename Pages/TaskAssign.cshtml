@@ -1,0 +1,84 @@
+﻿@page
+@model Donation_Website.Pages.TaskAssignModel
+@{
+    ViewData["Title"] = "Task Assignment";
+}
+
+<section class="container mt-4">
+    <h2 class="mb-3">Task Assignment and Notification</h2>
+    <p class="mb-4">Assign tasks to volunteers and send notifications.</p>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- Search Box -->
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by Name" onkeyup="filterTable()">
+    </div>
+
+    <form method="post">
+        <table class="table table-bordered table-hover text-center" id="volunteerTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Skill</th>
+                    <th>Availability</th>
+                    <th>Duty</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var v in Model.Volunteers)
+                {
+                    <tr>
+                        <td>@v.Name</td>
+                        <td>@v.Email</td>
+                        <td>@v.Phone</td>
+                        <td>@v.Address</td>
+                        <td>@v.Skill</td>
+                        <td>@v.Availability</td>
+                        <td>
+                            <textarea name="duties[@v.VolunteerID]" class="form-control" rows="2" id="duty-@v.VolunteerID"></textarea>
+                        </td>
+                        <td>
+                            <div class="btn-group gap-2" role="group">
+                                <button type="submit" asp-page-handler="Assign" asp-route-volunteerId="@v.VolunteerID" class="btn btn-primary btn-sm rounded-pill">Assign</button>
+                                <button type="button" onclick="document.getElementById('duty-@v.VolunteerID').value = ''" class="btn btn-secondary btn-sm rounded-pill">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+</section>
+
+<script>
+    function filterTable() {
+        var input = document.getElementById("searchInput");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("volunteerTable");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                var txtValue = td.textContent || td.innerText;
+                tr[i].style.display = txtValue.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+    }
+</script>

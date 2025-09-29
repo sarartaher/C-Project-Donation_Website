@@ -12,7 +12,6 @@
             <h1 class="h3 fw-bold text-dark mb-0">Admin Dashboard</h1>
             <div class="gap-3">
                 <span class="text-muted text-center display-6">Hello, <strong>@userName</strong></span>
-                
             </div>
         </div>
     </header>
@@ -46,6 +45,18 @@
                 </div>
             </div>
         </div>
+
+        <!-- NEW: Task Assign and Notification -->
+        <div class="col-12 col-md-6 col-xl-4">
+            <div class="card h-100 border-0" style="background-color: #e0f2fe;">
+                <div class="card-body">
+                    <h5 class="card-title">Task Assign and Notification</h5>
+                    <p class="card-text text-dark">Assign tasks and send notifications to volunteers.</p>
+                    <button onclick="location.href='@Url.Page("/TaskAssign")'" class="btn" style="background-color: #0ea5e9; color: white;">Assign Tasks</button>
+                </div>
+            </div>
+        </div>
+        <!-- /NEW -->
 
         <div class="col-12 col-md-6 col-xl-4">
             <div class="card h-100 border-0" style="background-color: #fee2e2;">
@@ -108,4 +119,3 @@
         </div>
     </div>
 </section>
-

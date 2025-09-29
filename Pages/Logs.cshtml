@@ -1,16 +1,27 @@
 ﻿@page
 @model Donation_Website.Pages.LogsModel
 @{
+    ViewData["Title"] = "Audit Log";
 }
+
 <section class="container mt-4">
     <h2>Audit Log</h2>
     <p>Track all activities and system logs.</p>
-    <div class="list-group">
-        <a href="#" class="list-group-item list-group-item-action">
-            <strong>Action:</strong> User Login, <strong>Time:</strong> 2025-09-11 10:00:00
-        </a>
-        <a href="#" class="list-group-item list-group-item-action">
-            <strong>Action:</strong> User Role Change, <strong>Time:</strong> 2025-09-11 10:05:00
-        </a>
-    </div>
+
+    @if (Model.Feed?.Count > 0)
+    {
+        <div class="list-group">
+            @foreach (var row in Model.Feed)
+            {
+                <div class="list-group-item d-flex justify-content-between">
+                    <div>@row.Message</div>
+                    <small class="text-muted">@row.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</small>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">No logs found.</div>
+    }
 </section>

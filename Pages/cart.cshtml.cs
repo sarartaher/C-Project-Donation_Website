@@ -27,11 +27,15 @@ namespace Donation_Website.Pages
         public int FundraiserId { get; set; }
         [BindProperty]
         public decimal Amount { get; set; }
+        [BindProperty]
+        public string SecretNameInput { get; set; }
         public void LoadCart()
         {
             Donations.Clear();
             int donorId = GetDonorId();
-            string donorName="Anonymous";
+            string donorName = "Anonymous";
+
+            // 1. Use logged-in name if available
             if (User.Identity?.IsAuthenticated == true)
             {
                 using (var nameCmd = _db.GetQuery("SELECT Name FROM Donor WHERE Email=@Email"))
@@ -40,12 +44,18 @@ namespace Donation_Website.Pages
                     nameCmd.Connection.Open();
                     var result = nameCmd.ExecuteScalar();
                     nameCmd.Connection.Close();
-                    donorName = result != null ? result.ToString() : "Anonymous";
+                    if (result != null && !string.IsNullOrEmpty(result.ToString()))
+                        donorName = result.ToString();
                 }
             }
 
-
-
+            // 2️⃣ Guest user: get secret name from session if available
+            else
+            {
+                var sessionName = HttpContext.Session.GetString("GuestDonorName");
+                if (!string.IsNullOrEmpty(sessionName))
+                    donorName = sessionName;
+            }
 
 
             string query = @"
@@ -202,7 +212,8 @@ namespace Donation_Website.Pages
                 string name = "Anonymous";
                 string email = "";
 
-                if (donorId != 1) // Not a guest
+                // Logged-in donor
+                if (User.Identity?.IsAuthenticated == true && donorId != 0)
                 {
                     using (var cmd = _db.GetQuery("SELECT Name, Email FROM Donor WHERE DonorID = @DonorId"))
                     {
@@ -217,6 +228,15 @@ namespace Donation_Website.Pages
                         cmd.Connection.Close();
                     }
                 }
+                // Save guest secret name to session
+                var secretNameInput = Request.Form["secretName"];
+                if (!string.IsNullOrEmpty(secretNameInput))
+                {
+                    HttpContext.Session.SetString("GuestDonorName", secretNameInput);
+                }
+
+
+
 
                 // 4️⃣ Get payment method from form
                 string paymentMethod = Request.Form["paymentMethod"];
@@ -332,12 +352,16 @@ namespace Donation_Website.Pages
             return RedirectToPage();
         }
 
-        public void OnGet(int? paymentId = null, int? FundraiserId = null, decimal? Amount = null)
+        public void OnGet(int? paymentId = null, int? fundraiserId = null, decimal? amount = null, string SecretNameInput= null)
         {
             APaymentId = paymentId ?? 0;
-            Console.WriteLine(APaymentId + "Load");
+            FundraiserId = fundraiserId ?? 0;
+            Amount = amount ?? 0m;
+
+            // LoadCart safely, no form required
             LoadCart();
         }
+
 
         // ====================== DOWNLOAD RECEIPT ======================
         public IActionResult OnGetDownloadReceipt(int cartId)
@@ -372,11 +396,13 @@ namespace Donation_Website.Pages
                 };
                 doc.Add(date);
 
+
                 // Donor Name
                 int donorId = GetDonorId();
-                string donorName;
+                string donorName = "Anonymous";
 
-                if (User.Identity?.IsAuthenticated == true)
+                // Logged-in donor
+                if (User.Identity?.IsAuthenticated == true && donorId != 0)
                 {
                     using (var cmd = _db.GetQuery("SELECT Name FROM Donor WHERE DonorID=@DonorId"))
                     {
@@ -386,10 +412,16 @@ namespace Donation_Website.Pages
                         cmd.Connection.Close();
                     }
                 }
-                else
+                // Guest donor: use secret name safely if available
+                else if (!(User.Identity?.IsAuthenticated ?? false))
                 {
-                    donorName = "Anonymous";
+                    if (Request.HasFormContentType && !string.IsNullOrEmpty(Request.Form["secretName"]))
+                    {
+                        donorName = Request.Form["secretName"];
+                    }
                 }
+
+
 
                 Paragraph donor = new Paragraph($"Donor Name: {donorName}", dateFont)
                 {

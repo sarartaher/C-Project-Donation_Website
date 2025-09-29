@@ -1,144 +1,143 @@
+using Donation_Website.Data;
+using Donation_Website.Models;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Data.SqlClient;
 using System;
-using Donation_Website.Models;
 using System.Collections.Generic;
 
 namespace Donation_Website.Pages
 {
     public class DonorRemarkPositionModel : PageModel
     {
-        private readonly DBConnection _db;
+        private readonly DBConnection _db = new DBConnection();
 
-        public DonorRemarkPositionModel(DBConnection db)
+        public class EventDonationRank
         {
-            _db = db;
+            public DateTime Date { get; set; }
+            public TimeSpan Time { get; set; }
+            public string ProjectTitle { get; set; }
+            public decimal DonationAmount { get; set; }
+            public int Position { get; set; }
+            public decimal TotalMoney { get; set; }
         }
 
-        public List<EventDonationRanking> DonationRankings { get; set; } = new();
-        public List<EventTimeRanking> TimeRankings { get; set; } = new();
-
-        public void OnGet(int donorId)
+        public class EventTimeRank
         {
-            LoadDonationRanking(donorId);
-            LoadTimeRanking(donorId);
+            public DateTime Date { get; set; }
+            public TimeSpan Time { get; set; }
+            public string ProjectTitle { get; set; }
+            public int TimePosition { get; set; }
+            public decimal DonationAmount { get; set; }
         }
-        private void LoadDonationRanking(int donorId)
-        {
-            string query = @"
-                SELECT 
-                    f.Title AS EventName,
-                    d.DonorID,
-                    SUM(d.Amount) AS TotalAmount,
-                    MIN(d.Date) AS FirstDonationDate
-                    FROM Donation d
-                    INNER JOIN Fundraiser f ON d.FundraiserID = f.FundraiserID
-                    INNER JOIN Payment p ON d.DonationID = p.DonationID
-                    WHERE p.PaymentStatus = 'Completed'
-                    GROUP BY f.Title, d.DonorID
-                    ORDER BY f.Title, TotalAmount DESC";
 
-            using (var cmd = _db.GetQuery(query))
+        public List<EventDonationRank> DonationRanks { get; set; } = new List<EventDonationRank>();
+        public List<EventTimeRank> TimeRanks { get; set; } = new List<EventTimeRank>();
+
+        public int CurrentDonorId => GetDonorId();
+
+        public void OnGet()
+        {
+            LoadDonationRanking();
+            LoadTimeRanking();
+        }
+
+        private int GetDonorId()
+        {
+            if (User.Identity?.IsAuthenticated == true)
             {
+                string email = User.Identity.Name;
+                using var cmd = _db.GetQuery("SELECT DonorID FROM Donor WHERE Email=@Email");
+                cmd.Parameters.AddWithValue("@Email", email);
                 cmd.Connection.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    string currentEvent = "";
-                    int position = 0;
-
-                    while (reader.Read())
-                    {
-                        string eventName = reader["EventName"].ToString();
-
-                        // Reset ranking per event
-                        if (currentEvent != eventName)
-                        {
-                            currentEvent = eventName;
-                            position = 0;
-                        }
-
-                        position++;
-
-                        if ((int)reader["DonorID"] == donorId)
-                        {
-                            DonationRankings.Add(new EventDonationRanking
-                            {
-                                Date = Convert.ToDateTime(reader["FirstDonationDate"]).ToString("yyyy-MM-dd"),
-                                EventName = eventName,
-                                DonorPosition = GetOrdinal(position),
-                                Money = Convert.ToDecimal(reader["TotalAmount"])
-                            });
-                        }
-                    }
-                }
+                var result = cmd.ExecuteScalar();
                 cmd.Connection.Close();
+                if (result != null) return (int)result;
             }
+            return 0; // guest/fallback
         }
 
-        private void LoadTimeRanking(int donorId)
+        private void LoadDonationRanking()
         {
             string query = @"
                 SELECT 
-                    f.Title AS EventName,
-                    d.DonorID,
-                    d.Date
+                    d.[Date],
+                    CAST(d.[Date] AS TIME) AS TimeOnly,
+                    p.Title AS ProjectTitle,
+                    d.Amount AS DonationAmount,
+                    (SELECT COUNT(*) + 1
+                     FROM Donation dd
+                     WHERE dd.FundraiserID = d.FundraiserID
+                       AND dd.Amount > d.Amount) AS Position,
+                    (SELECT SUM(d2.Amount) 
+                     FROM Donation d2 
+                     WHERE d2.DonorID = d.DonorID) AS TotalMoney
                 FROM Donation d
-                INNER JOIN Fundraiser f ON d.FundraiserID = f.FundraiserID
-                INNER JOIN Payment p ON d.DonationID = p.DonationID
-                WHERE p.PaymentStatus = 'Completed'
-                ORDER BY f.Title, d.Date ASC";
+                INNER JOIN Project p ON d.FundraiserID = p.ProjectID
+                WHERE d.DonorID = @DonorID
+                ORDER BY d.[Date] DESC";
 
             using (var cmd = _db.GetQuery(query))
             {
+                cmd.Parameters.AddWithValue("@DonorID", CurrentDonorId);
                 cmd.Connection.Open();
-                using (var reader = cmd.ExecuteReader())
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    string currentEvent = "";
-                    int position = 0;
-
-                    while (reader.Read())
+                    DonationRanks.Add(new EventDonationRank
                     {
-                        string eventName = reader["EventName"].ToString();
-
-                        // Reset ranking per event
-                        if (currentEvent != eventName)
-                        {
-                            currentEvent = eventName;
-                            position = 0;
-                        }
-
-                        position++;
-
-                        if ((int)reader["DonorID"] == donorId)
-                        {
-                            var date = Convert.ToDateTime(reader["Date"]);
-                            TimeRankings.Add(new EventTimeRanking
-                            {
-                                Date = date.ToString("yyyy-MM-dd"),
-                                Time = date.ToString("hh:mm tt"),
-                                EventName = eventName,
-                                TimePosition = GetOrdinal(position)
-                            });
-                        }
-                    }
+                        Date = reader.GetDateTime(reader.GetOrdinal("Date")),
+                        Time = reader.GetTimeSpan(reader.GetOrdinal("TimeOnly")),
+                        ProjectTitle = reader.GetString(reader.GetOrdinal("ProjectTitle")),
+                        DonationAmount = reader.GetDecimal(reader.GetOrdinal("DonationAmount")),
+                        Position = reader.GetInt32(reader.GetOrdinal("Position")),
+                        TotalMoney = reader.IsDBNull(reader.GetOrdinal("TotalMoney"))
+                                        ? 0
+                                        : reader.GetDecimal(reader.GetOrdinal("TotalMoney"))
+                    });
                 }
+                reader.Close();
                 cmd.Connection.Close();
             }
         }
-        private string GetOrdinal(int number)
+
+        private void LoadTimeRanking()
         {
-            if (number <= 0) return number.ToString();
-            return (number % 100) switch
+            string query = @"
+                SELECT 
+                    d.[Date],
+                    CAST(d.[Date] AS TIME) AS TimeOnly,
+                    p.Title AS ProjectTitle,
+                    (SELECT COUNT(*) + 1
+                     FROM Donation dd
+                     INNER JOIN Project pp ON dd.FundraiserID = pp.ProjectID
+                     WHERE dd.FundraiserID = d.FundraiserID
+                       AND DATEDIFF(SECOND, pp.StartDate, dd.[Date]) < DATEDIFF(SECOND, pp.StartDate, d.[Date])) AS TimePosition,
+                    d.Amount AS DonationAmount
+                FROM Donation d
+                INNER JOIN Project p ON d.FundraiserID = p.ProjectID
+                WHERE d.DonorID = @DonorID
+                ORDER BY d.[Date] DESC";
+
+            using (var cmd = _db.GetQuery(query))
             {
-                11 or 12 or 13 => number + "th",
-                _ => (number % 10) switch
+                cmd.Parameters.AddWithValue("@DonorID", CurrentDonorId);
+                cmd.Connection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    1 => number + "st",
-                    2 => number + "nd",
-                    3 => number + "rd",
-                    _ => number + "th",
+                    TimeRanks.Add(new EventTimeRank
+                    {
+                        Date = reader.GetDateTime(reader.GetOrdinal("Date")),
+                        Time = reader.GetTimeSpan(reader.GetOrdinal("TimeOnly")),
+                        ProjectTitle = reader.GetString(reader.GetOrdinal("ProjectTitle")),
+                        TimePosition = reader.GetInt32(reader.GetOrdinal("TimePosition")),
+                        DonationAmount = reader.GetDecimal(reader.GetOrdinal("DonationAmount"))
+                    });
                 }
-            };
+                reader.Close();
+                cmd.Connection.Close();
+            }
         }
     }
 }
+

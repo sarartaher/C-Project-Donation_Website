@@ -1,15 +1,244 @@
 ﻿@page
 @model Donation_Website.Pages.ManageEventsModel
 @{
+    ViewData["Title"] = "Event Management";
 }
-<section class="container mt-4">
-    <h2>Event Management</h2>
-    <p>Create, edit, turn on/off, or remove events.</p>
-    <button class="btn btn-success">Create New Event</button>
-    <div class="list-group mt-3">
-        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-            Event Name
-            <span class="badge bg-primary rounded-pill">Status: Active</span>
-        </a>
+
+<section class="container py-4">
+    <div class="p-4 rounded-3 border bg-success-subtle border-success">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h2 class="mb-1">Event Management</h2>
+                <p class="mb-0 text-muted">Create, edit, or remove events (Projects).</p>
+            </div>
+            <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2">
+                <form method="get" class="d-flex">
+                    <input name="q" value="@Request.Query["q"]" class="form-control me-2" type="search" placeholder="Search by title, description, or category..." />
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                <a href="#create-modal" class="btn btn-success">Create New Event</a>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+    {
+        <div class="alert alert-success my-3" role="alert">@Model.StatusMessage</div>
+    }
+    @Html.ValidationSummary(excludePropertyErrors: true, message: null, htmlAttributes: new { @class = "alert alert-danger my-3" })
+
+    <div class="card shadow-sm border-0 mt-3">
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                @if (Model.Events != null && Model.Events.Any())
+                {
+                    foreach (var e in Model.Events)
+                    {
+                        var editId = $"edit-{e.EventId}";
+                        var delId = $"delete-{e.EventId}";
+                        <div class="list-group-item py-3">
+                            <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-2">
+                                <div class="me-lg-3">
+                                    <div class="fw-semibold">@e.Title</div>
+                                    <div class="text-muted small">
+                                        @(e.StartDate?.ToString("yyyy-MM-dd") ?? "—")
+                                        —
+                                        @(e.EndDate?.ToString("yyyy-MM-dd") ?? "—")
+                                        · <span class="badge text-bg-secondary">@e.CategoryName</span>
+                                    </div>
+
+                                    @if (!string.IsNullOrWhiteSpace(e.Description))
+                                    {
+                                        <div class="text-muted small mt-1">@e.Description</div>
+                                    }
+
+                            <!-- NEW: Targeted Amount display -->
+                            <div class="text-muted small mt-1">
+                                <span>Targeted amount:</span>
+                                <strong>
+                                    @(e.TargetAmount.HasValue
+                                                                        ? $"৳ {e.TargetAmount.Value:N2}"
+                                                                        : "—")
+                                </strong>
+                            </div>
+                        </div>
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <a href="#@editId" class="btn btn-outline-primary">Edit</a>
+                                    <a href="#@delId" class="btn btn-outline-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EDIT MODAL (CSS :target) -->
+                        <div id="@editId" class="modal-target">
+                            <div class="modal-card">
+                                <div class="modal-header d-flex justify-content-between align-items-center border-bottom">
+                                    <h5 class="mb-0">Edit Event</h5>
+                                    <a href="#" class="btn btn-sm btn-light">✕</a>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post" asp-page-handler="Edit" class="row g-3 needs-validation" novalidate>
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="EventId" value="@e.EventId" />
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="Category-@e.EventId">Category</label>
+                                            <select id="Category-@e.EventId" name="CategoryID" class="form-select" required>
+                                                <option value="">-- select --</option>
+                                        @foreach (var c in Model.Categories)
+                                                {
+                                                    if (c.CategoryID == e.CategoryID)
+                                                    {
+                                                        <option value="@c.CategoryID" selected>@c.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@c.CategoryID">@c.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="Title-@e.EventId">Title</label>
+                                            <input id="Title-@e.EventId" name="Title" class="form-control" value="@e.Title" maxlength="100" required />
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="Start-@e.EventId">Start Date</label>
+                                            <input id="Start-@e.EventId" name="StartDate" type="date" class="form-control" value="@(e.StartDate?.ToString("yyyy-MM-dd") ?? "")" />
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="End-@e.EventId">End Date</label>
+                                            <input id="End-@e.EventId" name="EndDate" type="date" class="form-control" value="@(e.EndDate?.ToString("yyyy-MM-dd") ?? "")" />
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label" for="Desc-@e.EventId">Description</label>
+                                            <textarea id="Desc-@e.EventId" name="Description" class="form-control" rows="3" maxlength="255">@e.Description</textarea>
+                                        </div>
+
+                                        <!-- NEW: Targeted Amount field -->
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="TargetAmount-@e.EventId">Targeted Amount (৳)</label>
+                                            <input id="TargetAmount-@e.EventId"
+                                                   name="TargetAmount"
+                                                   type="number"
+                                                   step="0.01"
+                                                   min="0"
+                                                   class="form-control"
+                                                   value="@(e.TargetAmount.HasValue? e.TargetAmount.Value.ToString("0.##") : "")"
+                                                   placeholder="e.g., 50000" />
+                                            <div class="form-text">Leave empty to remove the target.</div>
+                                        </div>
+
+                                        <div class="col-12 d-flex justify-content-end gap-2">
+                                            <a href="#" class="btn btn-light">Cancel</a>
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DELETE MODAL -->
+                        <div id="@delId" class="modal-target">
+                            <div class="modal-card">
+                                <div class="modal-header d-flex justify-content-between align-items-center border-bottom">
+                                    <h5 class="mb-0 text-danger">Delete Event</h5>
+                                    <a href="#" class="btn btn-sm btn-light">✕</a>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete <strong>@e.Title</strong>?</p>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-end gap-2">
+                                    <a href="#" class="btn btn-light">Cancel</a>
+                                    <form method="post" asp-page-handler="Delete" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="EventId" value="@e.EventId" />
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="list-group-item py-4 text-center text-muted">
+                        No events found.
+                    </div>
+                }
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between px-3 py-2 border-top">
+                <small class="text-muted">@((Model.Events?.Count() ?? 0)) event(s)</small>
+                <small class="text-muted">No JavaScript · Server-post flows</small>
+            </div>
+        </div>
     </div>
 </section>
+
+<!-- CREATE MODAL -->
+<div id="create-modal" class="modal-target">
+    <div class="modal-card">
+        <div class="modal-header d-flex justify-content-between align-items-center border-bottom">
+            <h5 class="mb-0">Create New Event</h5>
+            <a href="#" class="btn btn-sm btn-light">✕</a>
+        </div>
+        <div class="modal-body">
+            <form method="post" asp-page-handler="Create" class="row g-3 needs-validation" novalidate>
+                @Html.AntiForgeryToken()
+
+                <div class="col-md-6">
+                    <label class="form-label" for="CategoryID">Category</label>
+                    <select id="CategoryID" name="CategoryID" class="form-select" required>
+                        <option value="">-- select --</option>
+                        @foreach (var c in Model.Categories)
+                        {
+                            <option value="@c.CategoryID">@c.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="Title">Title</label>
+                    <input id="Title" name="Title" class="form-control" maxlength="100" required />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="StartDate">Start Date</label>
+                    <input id="StartDate" name="StartDate" type="date" class="form-control" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="EndDate">End Date</label>
+                    <input id="EndDate" name="EndDate" type="date" class="form-control" />
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label" for="Description">Description</label>
+                    <textarea id="Description" name="Description" class="form-control" rows="3" maxlength="255"></textarea>
+                </div>
+
+                <!-- NEW: Targeted Amount in Create -->
+                <div class="col-md-6">
+                    <label class="form-label" for="CreateTargetAmount">Targeted Amount (৳)</label>
+                    <input id="CreateTargetAmount"
+                           name="TargetAmount"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           class="form-control"
+                           placeholder="e.g., 50000" />
+                </div>
+
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="#" class="btn btn-light">Cancel</a>
+                    <button type="submit" class="btn btn-success">Create Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

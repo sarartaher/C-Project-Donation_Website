@@ -2,6 +2,7 @@
 @model Donation_Website.Pages.DonationModel
 @{
     ViewData["Title"] = "Donation";
+    var userName = Model.HttpContext.Session.GetString("UserName");
 }
 
 <!-- Carousel -->

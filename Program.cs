@@ -27,7 +27,20 @@ builder.Services.AddSession(options =>
 
 // Register your custom services
 builder.Services.AddScoped<DBConnection>();
-builder.Services.AddScoped<Users>(); // Add this line
+builder.Services.AddScoped<Users>();
+
+// ===== Add Authentication =====
+builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.LoginPath = "/Account/Login"; // redirect for unauthorized
+        options.AccessDeniedPath = "/Account/AccessDenied"; // optional
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
 
 var app = builder.Build();
 
@@ -42,7 +55,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// ===== Add Authentication Middleware BEFORE Authorization =====
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseSession();
 
 app.MapRazorPages();

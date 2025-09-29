@@ -2,6 +2,7 @@
 @model Donation_Website.Pages.DonorPakageModel
 @{
     ViewData["Title"] = "Donor Packages";
+    var userName = Model.HttpContext.Session.GetString("UserName");
 }
 <section class="p-5">
     <header class="text-center mb-5">
