@@ -8,7 +8,7 @@
         {
             var topDonors = new List<LeaderboardItem>();
             string query = @"
-                SELECT TOP 10 D.DonorId, D.Name AS DonorName, SUM(DN.Amount) AS TotalDonation
+                SELECT TOP 20 D.DonorId, D.Name AS DonorName, SUM(DN.Amount) AS TotalDonation
                 FROM Donation DN
                 JOIN Donor D ON DN.DonorId = D.DonorId
                 WHERE DN.Status = 'Completed'
